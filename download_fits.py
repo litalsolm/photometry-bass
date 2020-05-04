@@ -45,30 +45,25 @@ def download (file_dir):
     filter_lst = ['u','g','r','i','z']
     for i in range(n):
         path = '/home/litalsol/Documents/astro/fits/sdss/'+name_lst[i]
-        try:
-            os.mkdir( path)
-        except:
-            print("the directory already exists")
+        if not os.path.exists(path):
+            os.mkdir(path)
         for fil in filter_lst:
-            url = 'http://dr16.sdss.org/sas/dr15/eboss/photoObj/frames/'+ rerun_lst[i] +'/' + run_lst[i] + '/' + camcol_lst[i] +'/frame-'+ fil +'-'+ run_lst[i].zfill(6) +'-'+camcol_lst[i]+'-'+field_lst[i]+'.fits.bz2'
-            myfile = requests.get(url)
-            open('/home/litalsol/Documents/astro/fits/sdss/'+name_lst[i]+'/'+name_lst[i]+'_'+fil+'.fits.bz2', 'wb').write(myfile.content)
-            with bz2.open(path +'/'+ name_lst[i]+'_'+fil+'.fits.bz2', "rb") as f:
-                content = f.read()
-                open('/home/litalsol/Documents/astro/fits/sdss/'+name_lst[i]+'/'+name_lst[i]+'_'+fil+'.fits', 'wb').write(content)
+            path2 = path + '/'+name_lst[i]+'_'+fil+'.fits'
+            if not os.path.exists(path2):
+                try:
+                    url = 'http://dr16.sdss.org/sas/dr15/eboss/photoObj/frames/'+ rerun_lst[i] +'/' + run_lst[i] + '/' + camcol_lst[i] +'/frame-'+ fil +'-'+ run_lst[i].zfill(6) +'-'+camcol_lst[i]+'-'+field_lst[i]+'.fits.bz2'
+                    myfile = requests.get(url)
+                    open('/home/litalsol/Documents/astro/fits/sdss/'+name_lst[i]+'/'+name_lst[i]+'_'+fil+'.fits.bz2', 'wb').write(myfile.content)
+                    with bz2.open(path +'/'+ name_lst[i]+'_'+fil+'.fits.bz2', "rb") as f:
+                        content = f.read()
+                        open('/home/litalsol/Documents/astro/fits/sdss/'+name_lst[i]+'/'+name_lst[i]+'_'+fil+'.fits', 'wb').write(content)
+                    os.remove(path +'/'+ name_lst[i]+'_'+fil+'.fits.bz2')
+                except:
+                    print("did not download fits files of ANG "+name_lst[i]+" filter "+fil)
                 
         
 file_dir = 'Skyserver_SQL4_21_2020 8_37_29 AM.csv'
-#download(file_dir)
+download(file_dir)
 
-def make_csv_file(file_dir): #from the csv file containing the whole catalog, this func will write a csv file that only contains the fields relevant for the cross id.
-    #with open(file_dir,'r') as csv_file:
-    
-    '''continue fron here next week. the catalog is in downloads. only take the ones that are AGN=True'''
-    
-    
-    
-    
-    return
 
         

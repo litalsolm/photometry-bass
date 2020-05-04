@@ -26,20 +26,23 @@ def arrays(num):
     hdr_arr = [0]*n
     wcs_arr = [0]*n
     for i in range(n):
-        dir='/home/litalsol/Documents/astro/fits/sdss/'+str(num)+'/'+str(num)+'_'+bands[i]+'.fits' 
-        
-        if dir!=[]:
-            hdul = fits.open(dir)
-            hdr1=hdul[0].header
-            data1=hdul[0].data
-            wcs_arr[i] = WCS(hdr1)
-            data_arr[i]=data1
-            hdr_arr[i]=hdr1
-        
-        else:
-            wcs_arr[i] = np.array([-99])
-            data_arr[i]= np.array([-99])
-            hdr_arr[i]= np.array([-99])
+        try:
+            dir='/home/litalsol/Documents/astro/fits/sdss/'+str(num)+'/'+str(num)+'_'+bands[i]+'.fits' 
+            
+            if dir!=[]:
+                hdul = fits.open(dir)
+                hdr1=hdul[0].header
+                data1=hdul[0].data
+                wcs_arr[i] = WCS(hdr1)
+                data_arr[i]=data1
+                hdr_arr[i]=hdr1
+            
+            else:
+                wcs_arr[i] = np.array([-99])
+                data_arr[i]= np.array([-99])
+                hdr_arr[i]= np.array([-99])
+        except:
+            print("wasn't able to read the fits")
     
     return (data_arr,hdr_arr,wcs_arr)
         
@@ -68,7 +71,7 @@ def arrays(num):
     return phot'''
 
 #find the photometry using aperture_photometry, no bg substracted
-def Skyaperture_star(coor,num):
+def Skyaperture_agn(coor,num):
     data_arr, hdr_arr, wcs_arr = arrays(num)  
     n = len(data_arr)
     arr=np.zeros(n)
@@ -77,24 +80,28 @@ def Skyaperture_star(coor,num):
         if miss.all():
             arr[j] = -99
         else:
-            position = SkyCoord(coor[0] , coor[1] , unit='deg', frame='icrs')
-            aperture = SkyCircularAperture(position, 1.5*u.arcsec)
-            phot_table = aperture_photometry(data_arr[j], aperture, wcs=wcs_arr[j])
-            phot_table['aperture_sum'].info.format = '%.8g' 
-            value = phot_table['aperture_sum'][0] #value in nanomaggy
-            #value=(-2.5)*math.log((value*10**(-9)),10)
-            arr[j] = value
-            #value = 3.631*(10**(-29))*value #value in erg/sec*cm^2*Hz
+            try:
+                position = SkyCoord(coor[0] , coor[1] , unit='deg', frame='icrs')
+                aperture = SkyCircularAperture(position, 1.5*u.arcsec)
+                phot_table = aperture_photometry(data_arr[j], aperture, wcs=wcs_arr[j])
+                phot_table['aperture_sum'].info.format = '%.8g' 
+                value = phot_table['aperture_sum'][0] #value in nanomaggy
+                #value=(-2.5)*math.log((value*10**(-9)),10)
+                arr[j] = value
+                #value = 3.631*(10**(-29))*value #value in erg/sec*cm^2*Hz
+            except:
+                print("wasn't able to perform sky apeture to AGN "+str(num))
     return arr
 
 
 #subtructs the bg from the result of skyaperture_star
-def phot_star(coor,num):
+def phot_agn(coor,num):
     data_arr, hdr_arr, wcs_arr = arrays(num)
     n = len(data_arr)
     
-    phot = Skyaperture_star(coor,num)
+    phot = Skyaperture_agn(coor,num)
     #pix_lst=[wcs_arr[i].wcs_world2pix(coor[0],coor[1],0) for i in range(n)]
+    
     
     pix_lst = [0]*n
     for i in range(n):
@@ -113,19 +120,24 @@ def phot_star(coor,num):
     obj=np.zeros(n)
     bg_error=np.zeros(n)
     NMGY=np.zeros(n)
+    bg_sum=[]
+    bg_e=[]
     
-    for i in range(n):
-        miss = data_arr[i] == np.array([-99])
-        if not miss.all():
-            bg=photBG(pix_lst[i][0],pix_lst[i][1],data_arr[i],r_small,r_medium,r_large)
-            #bg=WholeBG(data_arr[i])
-            obj[i] = bg[0]
-            bg_error[i] = bg[1]
-            NMGY[i]=hdr_arr[i]['NMGY']
+    try:
+        for i in range(n):
+            miss = data_arr[i] == np.array([-99])
+            if not miss.all():
+                bg=photBG(pix_lst[i][0],pix_lst[i][1],data_arr[i],r_small,r_medium,r_large) #calculating bg
+                #bg=WholeBG(data_arr[i])
+                obj[i] = bg[0]
+                bg_error[i] = bg[1]
+                NMGY[i]=hdr_arr[i]['NMGY']
 
             
-    bg_sum=obj*np.pi*(r_small**2) #the bg within the inner aperture
-    bg_e=bg_error*np.pi*(r_small**2) #the error of the bg
+        bg_sum=obj*np.pi*(r_small**2) #the bg within the inner aperture
+        bg_e=bg_error*np.pi*(r_small**2) #the error of the bg
+    except:
+        print("wasn't able to perform photBG to AGN "+str(num))
     
     
     phot_s = np.zeros(n)
@@ -137,25 +149,30 @@ def phot_star(coor,num):
     delta_minus = np.zeros(n)
     delta_plus = np.zeros(n)
     
-    for i in range(n):
-        miss = data_arr[i] == np.array([-99])
-        if not miss.all():
-            phot_s[i]=phot[i]-bg_sum[i]
-            phot_error[i] = NMGY[i] * np.sqrt(phot[i]/NMGY[i])
-            error[i] = np.sqrt(phot_error[i]**2+bg_e[i]**2)
-            to_mag=lambda x:np.sign(x)*(-2.5)*np.log10(np.sign(x)*x*10**(-9))
-            phot_s_mag[i]=to_mag(phot_s[i])
-            m_plus[i] = to_mag(phot_s[i]-error[i])
-            m_minus[i] = to_mag(phot_s[i] + error[i])
-            delta_plus[i] = np.absolute(m_plus[i]-phot_s_mag[i])
-            delta_minus[i] = np.absolute(m_minus[i]-phot_s_mag[i])
-        else:
-            phot_s_mag[i] = -99
-            delta_minus[i] = 0
-            delta_plus[i] = 0
+    try:
+    
+        #this loop calculates the photometry-bg and all the errors. I used a loop because there is an exception when the fits file
+        #of one of the bands is missing
+        for i in range(n): 
+            miss = data_arr[i] == np.array([-99])
+            if not miss.all():
+                phot_s[i]=phot[i]-bg_sum[i]
+                phot_error[i] = NMGY[i] * np.sqrt(phot[i]/NMGY[i])
+                error[i] = np.sqrt(phot_error[i]**2+bg_e[i]**2)
+                to_mag=lambda x:np.sign(x)*(-2.5)*np.log10(np.sign(x)*x*10**(-9))
+                phot_s_mag[i]=to_mag(phot_s[i])
+                m_plus[i] = to_mag(phot_s[i]-error[i])
+                m_minus[i] = to_mag(phot_s[i] + error[i])
+                delta_plus[i] = np.absolute(m_plus[i]-phot_s_mag[i])
+                delta_minus[i] = np.absolute(m_minus[i]-phot_s_mag[i])
+            else:
+                phot_s_mag[i] = -99
+                delta_minus[i] = 0
+                delta_plus[i] = 0
+    except:
+        print("wasn't able to perform phot_agn to AGN "+str(num))
     
     return (phot_s_mag,delta_plus,delta_minus)
-    #return (phot_s,error)
 
 
 
@@ -165,18 +182,21 @@ def photometry(coor_lst,img_lst):
     arr_eplus=np.array([])
     arr_eminus=np.array([])
     for i in range(n):
-        h=phot_star(coor_lst[i],img_lst[i])
-        temp1, temp2, temp3=h
-        arr = np.append(arr, temp1)
-        arr_eplus = np.append(arr_eplus, temp2)
-        arr_eminus = np.append(arr_eminus, temp3)
+        try:
+            h=phot_agn(coor_lst[i],img_lst[i])
+            temp1, temp2, temp3=h
+            arr = np.append(arr, temp1)
+            arr_eplus = np.append(arr_eplus, temp2)
+            arr_eminus = np.append(arr_eminus, temp3)
+        except:
+            print("wasn't able to perform photometry to AGN "+str(img_lst[i]))
     arr=np.reshape(arr,(-1,5))
     arr_eplus=np.reshape(arr_eplus,(-1,5))
     arr_eminus=np.reshape(arr_eminus,(-1,5))
     return (arr,arr_eplus,arr_eminus)
     
 
-#calculates photometry given point in pixels, subtructs the background
+#calculates manually photometry given point in pixels, subtructs the background
 '''def photometry(centerX,centerY,data,small,medium,large):
     photColl=np.array([])
     for i in range(math.floor(centerX-small),math.ceil(centerX+small)):
