@@ -8,7 +8,7 @@ from photutils import aperture_photometry
 from astropy.wcs import WCS
 import glob
 import math
-import photometry
+import sdss_photometry
 import pandas as pd
 import csv
 
@@ -25,10 +25,7 @@ with open('Skyserver_SQL4_21_2020 8_37_29 AM.csv','r') as csv_file: #opens the f
         img_lst=np.append(img_lst,line[0])
 
 coor_lst = np.reshape(coor_lst,(-1,2))
-#phot=photometry.flux_array(coor_lst,dir)
-#check=photometry.flux_check(coor_lst,dir)
-#c=phot-check
-h=photometry.photometry(coor_lst,img_lst)
+h=sdss_photometry.photometry(coor_lst,img_lst)
 
 '''sdss=np.array([[21.78,19.2,20.54,23.29,18.49],[18.04,17.29,17.48,19.48,17.2],
       [20.45,19.36,19.66,22.11,19.29],[18.55,17.82,18.01,19.9,17.77],
@@ -49,7 +46,7 @@ df_eplus = df_eplus.assign(ra=coor_lst[:,[0]],dec=coor_lst[:,[1]],ID=img_lst)
 df_eminus = pd.DataFrame(h[2],columns=['u','g','r','i','z'])
 df_eminus = df_eminus.assign(ra=coor_lst[:,[0]],dec=coor_lst[:,[1]],ID=img_lst)
 
-ph=photometry.create_table(h[0],h[1],h[2])
+ph=sdss_photometry.create_table(h[0],h[1],h[2])
 ph = ph.assign(ra=coor_lst[:,[0]],dec=coor_lst[:,[1]],ID=img_lst)
 print(ph)
 

@@ -17,8 +17,10 @@ import glob
 import math
 import pandas as pd
 import csv
+import os
 
-#creates the data and head arrays for each star. num is the ID of the AGN that is near the star, thus the name of the file with the fits
+# creates the data and header arrays for each star. num is the ID of the AGN that is near the star, 
+# thus the name of the file with the fits
 def arrays(num):
     bands = ['u','g','r','i','z']
     n=len(bands)
@@ -27,10 +29,10 @@ def arrays(num):
     wcs_arr = [0]*n
     for i in range(n):
         try:
-            dir='/home/litalsol/Documents/astro/fits/sdss/'+str(num)+'/'+str(num)+'_'+bands[i]+'.fits' 
+            path='/home/litalsol/Documents/astro/fits/sdss/'+str(num)+'/'+str(num)+'_'+bands[i]+'.fits' 
             
-            if dir!=[]:
-                hdul = fits.open(dir)
+            if os.path.exists(path):
+                hdul = fits.open(path)
                 hdr1=hdul[0].header
                 data1=hdul[0].data
                 wcs_arr[i] = WCS(hdr1)
