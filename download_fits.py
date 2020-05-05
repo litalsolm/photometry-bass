@@ -44,20 +44,20 @@ def download (file_dir):
     n = len(name_lst)
     filter_lst = ['u','g','r','i','z']
     for i in range(n):
-        path = '/home/litalsol/Documents/astro/fits/sdss/'+name_lst[i]
+        path = '/home/litalsol/Documents/astro/fits/sdss/'+name_lst[i].zfill(4)
         if not os.path.exists(path):
             os.mkdir(path)
         for fil in filter_lst:
-            path2 = path + '/'+name_lst[i]+'_'+fil+'.fits'
+            path2 = path + '/'+name_lst[i].zfill(4)+'_'+fil+'.fits'
             if not os.path.exists(path2):
                 try:
                     url = 'http://dr16.sdss.org/sas/dr15/eboss/photoObj/frames/'+ rerun_lst[i] +'/' + run_lst[i] + '/' + camcol_lst[i] +'/frame-'+ fil +'-'+ run_lst[i].zfill(6) +'-'+camcol_lst[i]+'-'+field_lst[i]+'.fits.bz2'
                     myfile = requests.get(url)
-                    open('/home/litalsol/Documents/astro/fits/sdss/'+name_lst[i]+'/'+name_lst[i]+'_'+fil+'.fits.bz2', 'wb').write(myfile.content)
-                    with bz2.open(path +'/'+ name_lst[i]+'_'+fil+'.fits.bz2', "rb") as f:
+                    open(path +'/'+name_lst[i].zfill(4)+'_'+fil+'.fits.bz2', 'wb').write(myfile.content)
+                    with bz2.open(path +'/'+ name_lst[i].zfill(4)+'_'+fil+'.fits.bz2', "rb") as f:
                         content = f.read()
-                        open('/home/litalsol/Documents/astro/fits/sdss/'+name_lst[i]+'/'+name_lst[i]+'_'+fil+'.fits', 'wb').write(content)
-                    os.remove(path +'/'+ name_lst[i]+'_'+fil+'.fits.bz2')
+                        open(path +'/'+name_lst[i].zfill(4)+'_'+fil+'.fits', 'wb').write(content)
+                    os.remove(path +'/'+ name_lst[i].zfill(4)+'_'+fil+'.fits.bz2')
                 except:
                     print("did not download fits files of ANG "+name_lst[i]+" filter "+fil)
                 

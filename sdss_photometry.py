@@ -18,24 +18,50 @@ import math
 import pandas as pd
 import csv
 import os
+from enum import Enum, auto
+
+class Survey(Enum):
+    sdss = auto()
+    ps1 = auto()
+
+error_agn = []
 
 # creates the data and header arrays for each star. num is the ID of the AGN that is near the star, 
 # thus the name of the file with the fits
-def arrays(num):
-    bands = ['u','g','r','i','z']
+def arrays(num, survey):
+    
+    assert isinstance(survey, Enum)
+    
+    if survey == Survey.sdss:
+        bands = ['u','g','r','i','z']
+    else: #for ps1
+        bands = ['g','r','i','z','y']
     n=len(bands)
     data_arr = [0]*n
     hdr_arr = [0]*n
     wcs_arr = [0]*n
     for i in range(n):
         try:
-            path='/home/litalsol/Documents/astro/fits/sdss/'+str(num)+'/'+str(num)+'_'+bands[i]+'.fits' 
+            
+            if survey == Survey.sdss:
+                path='/home/litalsol/Documents/astro/fits/sdss/'+str(num).zfill(4)+'/'+str(num).zfill(4)+'_'+bands[i]+'.fits' 
+            else:
+                path = '/home/litalsol/Documents/astro/fits/PAN/0001/1_2MASXJ00004876-0709117_g.mk.fits'
             
             if os.path.exists(path):
                 hdul = fits.open(path)
                 hdr1=hdul[0].header
                 data1=hdul[0].data
-                wcs_arr[i] = WCS(hdr1)
+                if survey == Survey.sdss:
+                    wcs_arr[i] = WCS(hdr1)
+                else: #for ps1
+                    w=WCS(naxis=2)
+                    w.wsc.crpix = [hdr1['CRPIX1'],hdr1['CRPIX2']]
+                    w.wcs.ctype=[hdr1['CTYPE1'],hdr1['CTYPE2']]
+                    w.wcs.crval=[hdr1['CRVAL1'],hdr1['CRVAL2']]
+                    w.wcs.pc=[[hdr1['PC001001'],hdr1['PC001002']],[hdr1['PC002001'],hdr1['PC002002']]]
+                    # I still neet to find a way to det the dimensions of the fits file
+                    wcs_arr[i] = w
                 data_arr[i]=data1
                 hdr_arr[i]=hdr1
             
@@ -44,6 +70,7 @@ def arrays(num):
                 data_arr[i]= np.array([-99])
                 hdr_arr[i]= np.array([-99])
         except:
+            error_agn.append((num,bands[i]))
             print("wasn't able to read the fits")
     
     return (data_arr,hdr_arr,wcs_arr)
@@ -93,6 +120,7 @@ def Skyaperture_agn(coor,num):
                 #value = 3.631*(10**(-29))*value #value in erg/sec*cm^2*Hz
             except:
                 print("wasn't able to perform sky apeture to AGN "+str(num))
+                
     return arr
 
 
@@ -179,6 +207,7 @@ def phot_agn(coor,num):
 
 
 def photometry(coor_lst,img_lst):
+    bands = ['u','g','r','i','z']
     n=len(coor_lst)
     arr=np.array([])
     arr_eplus=np.array([])
@@ -191,6 +220,7 @@ def photometry(coor_lst,img_lst):
             arr_eplus = np.append(arr_eplus, temp2)
             arr_eminus = np.append(arr_eminus, temp3)
         except:
+            error_agn.append((img_lst[i],bands[i]))
             print("wasn't able to perform photometry to AGN "+str(img_lst[i]))
     arr=np.reshape(arr,(-1,5))
     arr_eplus=np.reshape(arr_eplus,(-1,5))
@@ -264,7 +294,9 @@ def create_table(data,plus,minus):
     df = df.assign(z_minus=minus[:,[4]])
     df = df.assign(z_plus=plus[:,[4]])
     
-    
+
+def get_error_agn():
+    return error_agn
     
     return df
     
