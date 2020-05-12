@@ -51,17 +51,8 @@ def arrays(num, survey):
             if os.path.exists(path):
                 hdul = fits.open(path)
                 hdr1=hdul[0].header
-                data1=hdul[0].data
-                if survey == Survey.sdss:
-                    wcs_arr[i] = WCS(hdr1)
-                else: #for ps1
-                    w=WCS(naxis=2)
-                    w.wsc.crpix = [hdr1['CRPIX1'],hdr1['CRPIX2']]
-                    w.wcs.ctype=[hdr1['CTYPE1'],hdr1['CTYPE2']]
-                    w.wcs.crval=[hdr1['CRVAL1'],hdr1['CRVAL2']]
-                    w.wcs.pc=[[hdr1['PC001001'],hdr1['PC001002']],[hdr1['PC002001'],hdr1['PC002002']]]
-                    # I still neet to find a way to det the dimensions of the fits file
-                    wcs_arr[i] = w
+                data1=hdul[0].data           
+                wcs_arr[i] = WCS(hdr1)
                 data_arr[i]=data1
                 hdr_arr[i]=hdr1
             

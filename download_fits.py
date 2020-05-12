@@ -14,12 +14,15 @@ import csv
 import numpy as np
 import os
 import bz2
+from bs4 import BeautifulSoup
+import sys
+
 
 
 '''  very important - if the fits file already exists, there's no need to download it again. I need to add a condition for that,
 cause right now the code just downloads everything'''
 
-def download (file_dir):
+def download_sdss (file_dir):
     with open(file_dir,'r') as csv_file: #opens the file that i get from cross-id
         csv_reader = csv.reader(csv_file)
         ra_lst=np.array([])
@@ -62,8 +65,42 @@ def download (file_dir):
                     print("did not download fits files of ANG "+name_lst[i]+" filter "+fil)
                 
         
-file_dir = 'Skyserver_SQL4_21_2020 8_37_29 AM.csv'
-download(file_dir)
+
+def download_ps1(file_dir):
+    url = "https://ps1images.stsci.edu/cgi-bin/ps1cutouts?pos=%f+%+f&filter=color&filetypes=stack&auxiliary=data&size=240&output_size=0&verbose=0&autoscale=99.500000&catlist="
+    with open(file_dir,'r') as csv_file:
+        csv_reader = csv.reader(csv_file)
+        ra_lst=np.array([])
+        dec_lst=np.array([])
+        name_lst=np.array([])
+        for line in csv_reader:
+            name_lst=np.append(name_lst,line[0])
+            ra_lst=np.append(ra_lst,float(line[1])) 
+            dec_lst=np.append(dec_lst,float(line[2])) 
+        
+    filter_lst = {4:'g',7:'r',10:'i',13:'z',16:'y'}   #I need to add a condition that if the file exsists it won't download it again
+    n = len(name_lst)
+    for i in range(n):
+        r = requests.get(url % (ra_lst[i], dec_lst[i]))
+        soup = BeautifulSoup(r.text, 'html.parser')
+        path = '/home/litalsol/Documents/astro/fits/ps1/'+name_lst[i].zfill(4)
+        if not os.path.exists(path):
+            os.mkdir(path)
+        for key in filter_lst:
+            a = "https:" + soup.find_all('a')[key].get('href')
+            r2 = requests.get(a)
+            open(path+'/'+name_lst[i].zfill(4)+'_'+filter_lst[key]+'.fits' , 'wb').write(r2.content)
+
+
+
+
+
+
+
+
+file_dir = '/home/litalsol/Documents/astro/bass_test.csv'
+#download_sdss(file_dir)
+download_ps1(file_dir)
 
 
         
