@@ -56,18 +56,18 @@ def download_sdss (file_dir):
                 try:
                     url = 'http://dr16.sdss.org/sas/dr15/eboss/photoObj/frames/'+ rerun_lst[i] +'/' + run_lst[i] + '/' + camcol_lst[i] +'/frame-'+ fil +'-'+ run_lst[i].zfill(6) +'-'+camcol_lst[i]+'-'+field_lst[i]+'.fits.bz2'
                     myfile = requests.get(url)
-                    open(path +'/'+name_lst[i].zfill(4)+'_'+fil+'.fits.bz2', 'wb').write(myfile.content)
+                    open(path +'/BAT_ID_'+name_lst[i].zfill(4)+'_PS1_'+fil+'_stack.fits.bz2', 'wb').write(myfile.content)
                     with bz2.open(path +'/'+ name_lst[i].zfill(4)+'_'+fil+'.fits.bz2', "rb") as f:
                         content = f.read()
-                        open(path +'/'+name_lst[i].zfill(4)+'_'+fil+'.fits', 'wb').write(content)
-                    os.remove(path +'/'+ name_lst[i].zfill(4)+'_'+fil+'.fits.bz2')
+                        open(path +'/BAT_ID_'+name_lst[i].zfill(4)+'_PS1_'+fil+'_stack.fits', 'wb').write(content)
+                    os.remove(path +'/BAT_ID_'+name_lst[i].zfill(4)+'_PS1_'+fil+'_stack.fits.bz2')
                 except:
                     print("did not download fits files of ANG "+name_lst[i]+" filter "+fil)
                 
         
 
 def download_ps1(file_dir):
-    url = "https://ps1images.stsci.edu/cgi-bin/ps1cutouts?pos=%f+%+f&filter=color&filetypes=stack&auxiliary=data&size=240&output_size=0&verbose=0&autoscale=99.500000&catlist="
+    url = "https://ps1images.stsci.edu/cgi-bin/ps1cutouts?pos=%f+%f&filter=color&filetypes=stack&auxiliary=data&size=480&output_size=0&verbose=0&autoscale=99.500000&catlist="
     with open(file_dir,'r') as csv_file:
         csv_reader = csv.reader(csv_file)
         ra_lst=np.array([])
@@ -78,28 +78,51 @@ def download_ps1(file_dir):
             ra_lst=np.append(ra_lst,float(line[1])) 
             dec_lst=np.append(dec_lst,float(line[2])) 
         
-    filter_lst = {4:'g',7:'r',10:'i',13:'z',16:'y'}   #I need to add a condition that if the file exsists it won't download it again
     n = len(name_lst)
     for i in range(n):
-        r = requests.get(url % (ra_lst[i], dec_lst[i]))
-        soup = BeautifulSoup(r.text, 'html.parser')
-        path = '/home/litalsol/Documents/astro/fits/ps1/'+name_lst[i].zfill(4)
-        if not os.path.exists(path):
-            os.mkdir(path)
-        for key in filter_lst:
-            a = "https:" + soup.find_all('a')[key].get('href')
-            r2 = requests.get(a)
-            open(path+'/'+name_lst[i].zfill(4)+'_'+filter_lst[key]+'.fits' , 'wb').write(r2.content)
+        try:
+            r = requests.get(url % (ra_lst[i], dec_lst[i]))
+            soup = BeautifulSoup(r.text, 'html.parser')
+            path = '/home/litalsol/Documents/astro/fits/ps1/'+name_lst[i].zfill(4)
+            filter_lst = find_indexes(soup)
+            if not os.path.exists(path):
+                os.mkdir(path)
+            for key in filter_lst:
+                if not os.path.exists(path+'/BAT_ID_'+name_lst[i].zfill(4)+'_PS1_'+filter_lst[key]+'_stack.fits'):
+                    a = "https:" + soup.find_all('a')[key].get('href')
+                    r2 = requests.get(a)
+                    open(path+'/BAT_ID_'+name_lst[i].zfill(4)+'_PS1_'+filter_lst[key]+'_stack.fits' , 'wb').write(r2.content)
+        except:
+            print("could not download item: "+name_lst[i])
 
 
-
-
+def find_indexes(soup):  #some objects have low quality images and it adds a link to the url so the indexes of the cutout fits files change
+    initial_indexes = [4,7,10,13,16]
+    a = soup.find_all('a')
+    i = 1
+    error = 'https://outerspace.stsci.edu/x/VQL_AQ#PS1DR2caveats-QuestionableImagesnearthePole'
+    if a[1].get('href') == error:
+        i=3
+        initial_indexes[0] = initial_indexes[0]+1
+    if a[3].get('href') == error:
+        initial_indexes[0] = initial_indexes[0]+1
+        i=7
+    for j in range(1,5):     
+        if a[i].get('href') == error:
+            initial_indexes[j] = initial_indexes[j-1]+4
+            i = i+4
+        else:
+            i=i+3
+    filter_lst = {initial_indexes[0]:'g', initial_indexes[1]:'r',initial_indexes[2]:'i',initial_indexes[3]:'z',initial_indexes[4]:'y'}
+    return filter_lst
+    
 
 
 
 
 file_dir = '/home/litalsol/Documents/astro/bass_test.csv'
-#download_sdss(file_dir)
+file_dir2 = '/home/litalsol/Documents/astro/Skyserver_SQL5_18_2020 9_05_37 AM.csv'
+#download_sdss(file_dir2)
 download_ps1(file_dir)
 
 

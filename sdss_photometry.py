@@ -41,12 +41,11 @@ def arrays(num, survey):
     hdr_arr = [0]*n
     wcs_arr = [0]*n
     for i in range(n):
-        try:
-            
+        try: 
             if survey == Survey.sdss:
                 path='/home/litalsol/Documents/astro/fits/sdss/'+str(num).zfill(4)+'/'+str(num).zfill(4)+'_'+bands[i]+'.fits' 
             else:
-                path = '/home/litalsol/Documents/astro/fits/PAN/0001/1_2MASXJ00004876-0709117_g.mk.fits'
+                path = '/home/litalsol/Documents/astro/fits/ps1/'+str(num).zfill(4)+'/'+str(num).zfill(4)+'_'+bands[i]+'.fits'
             
             if os.path.exists(path):
                 hdul = fits.open(path)
@@ -91,8 +90,8 @@ def arrays(num, survey):
     return phot'''
 
 #find the photometry using aperture_photometry, no bg substracted
-def Skyaperture_agn(coor,num):
-    data_arr, hdr_arr, wcs_arr = arrays(num)  
+def Skyaperture_agn(coor,num,survey):
+    data_arr, hdr_arr, wcs_arr = arrays(num,survey)  
     n = len(data_arr)
     arr=np.zeros(n)
     for j in range(n): 
@@ -116,8 +115,8 @@ def Skyaperture_agn(coor,num):
 
 
 #subtructs the bg from the result of skyaperture_star
-def phot_agn(coor,num):
-    data_arr, hdr_arr, wcs_arr = arrays(num)
+def phot_agn(coor,num,survey):
+    data_arr, hdr_arr, wcs_arr = arrays(num,survey)
     n = len(data_arr)
     
     phot = Skyaperture_agn(coor,num)
@@ -197,7 +196,7 @@ def phot_agn(coor,num):
 
 
 
-def photometry(coor_lst,img_lst):
+def photometry(coor_lst,img_lst,survey):
     bands = ['u','g','r','i','z']
     n=len(coor_lst)
     arr=np.array([])
@@ -205,7 +204,7 @@ def photometry(coor_lst,img_lst):
     arr_eminus=np.array([])
     for i in range(n):
         try:
-            h=phot_agn(coor_lst[i],img_lst[i])
+            h=phot_agn(coor_lst[i],img_lst[i],survey)
             temp1, temp2, temp3=h
             arr = np.append(arr, temp1)
             arr_eplus = np.append(arr_eplus, temp2)
@@ -289,7 +288,7 @@ def create_table(data,plus,minus):
 def get_error_agn():
     return error_agn
     
-    return df
+
     
 
 
