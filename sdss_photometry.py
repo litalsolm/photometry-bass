@@ -32,20 +32,18 @@ def arrays(num, survey):
     
     assert isinstance(survey, Enum)
     
-    if survey == Survey.sdss:
-        bands = ['u','g','r','i','z']
-    else: #for ps1
-        bands = ['g','r','i','z','y']
-    n=len(bands)
+    n=5
     data_arr = [0]*n
     hdr_arr = [0]*n
     wcs_arr = [0]*n
     for i in range(n):
         try: 
             if survey == Survey.sdss:
-                path='/home/litalsol/Documents/astro/fits/sdss/'+str(num).zfill(4)+'/'+str(num).zfill(4)+'_'+bands[i]+'.fits' 
+                bands = ['u','g','r','i','z']
+                path='/home/litalsol/Documents/astro/fits/sdss/'+str(num).zfill(4)+'/BAT_ID_'+str(num).zfill(4)+'_sdss_'+bands[i]+'.fits'
             else:
-                path = '/home/litalsol/Documents/astro/fits/ps1/'+str(num).zfill(4)+'/'+str(num).zfill(4)+'_'+bands[i]+'.fits'
+                bands = ['g','r','i','z','y']
+                path = '/home/litalsol/Documents/astro/fits/ps1/'+str(num).zfill(4)+'/BAT_ID_'+str(num).zfill(4)+'_PS1_'+bands[i]+'_stack.fits'
             
             if os.path.exists(path):
                 hdul = fits.open(path)
