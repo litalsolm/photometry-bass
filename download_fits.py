@@ -122,7 +122,7 @@ def find_indexes(soup):  #some objects have low quality images and it adds a lin
 
 file_dir = '/home/litalsol/Documents/astro/bass_test.csv'
 file_dir2 = '/home/litalsol/Documents/astro/Skyserver_SQL5_18_2020 9_05_37 AM.csv'
-download_sdss(file_dir2)
+#download_sdss(file_dir2)
 #download_ps1(file_dir)
 
 

@@ -36,12 +36,14 @@ def arrays(num, survey):
     data_arr = [0]*n
     hdr_arr = [0]*n
     wcs_arr = [0]*n
+    path = ''
     for i in range(n):
         try: 
             if survey == Survey.sdss:
                 bands = ['u','g','r','i','z']
                 path='/home/litalsol/Documents/astro/fits/sdss/'+str(num).zfill(4)+'/BAT_ID_'+str(num).zfill(4)+'_sdss_'+bands[i]+'.fits'
-            else:
+            
+            if survey == Survey.ps1:
                 bands = ['g','r','i','z','y']
                 path = '/home/litalsol/Documents/astro/fits/ps1/'+str(num).zfill(4)+'/BAT_ID_'+str(num).zfill(4)+'_PS1_'+bands[i]+'_stack.fits'
             
@@ -116,10 +118,9 @@ def Skyaperture_agn(coor,num,survey):
 def phot_agn(coor,num,survey):
     data_arr, hdr_arr, wcs_arr = arrays(num,survey)
     n = len(data_arr)
+    conv = get_convertion(survey, hdr_arr)
     
-    phot = Skyaperture_agn(coor,num)
-    #pix_lst=[wcs_arr[i].wcs_world2pix(coor[0],coor[1],0) for i in range(n)]
-    
+    phot = Skyaperture_agn(coor,num,survey)
     
     pix_lst = [0]*n
     for i in range(n):
@@ -129,15 +130,14 @@ def phot_agn(coor,num,survey):
         else:
             pix_lst[i] = wcs_arr[i].wcs_world2pix(coor[0],coor[1],0)   
     
-    radii=[1.5,4.5,5.5]
-    r_small=radii[0]/0.396
-    r_medium=radii[1]/0.396
-    r_large=radii[2]/0.369
-    '''0.396arcsec=1pix
-    pitagoras on  cd21*3600 and cd22*3600'''
+    radii=[1.21,4.5,5.5]  # I need to continue here - how to input the data of psf?
+    r_small=radii[0]/conv
+    r_medium=radii[1]/conv
+    r_large=radii[2]/conv
+
     obj=np.zeros(n)
     bg_error=np.zeros(n)
-    NMGY=np.zeros(n)
+    gain=np.ones(n) # we use it to calculate the error for sdss
     bg_sum=[]
     bg_e=[]
     
@@ -146,10 +146,12 @@ def phot_agn(coor,num,survey):
             miss = data_arr[i] == np.array([-99])
             if not miss.all():
                 bg=photBG(pix_lst[i][0],pix_lst[i][1],data_arr[i],r_small,r_medium,r_large) #calculating bg
-                #bg=WholeBG(data_arr[i])
                 obj[i] = bg[0]
                 bg_error[i] = bg[1]
-                NMGY[i]=hdr_arr[i]['NMGY']
+                if survey == Survey.sdss:
+                    gain[i]=hdr_arr[i]['NMGY']
+                if survey == Survey.ps1:
+                    gain[i] = 1/hdr_arr[i]['HIERARCH CELL.GAIN']
 
             
         bg_sum=obj*np.pi*(r_small**2) #the bg within the inner aperture
@@ -175,9 +177,16 @@ def phot_agn(coor,num,survey):
             miss = data_arr[i] == np.array([-99])
             if not miss.all():
                 phot_s[i]=phot[i]-bg_sum[i]
-                phot_error[i] = NMGY[i] * np.sqrt(phot[i]/NMGY[i])
+                phot_error[i] = gain[i] * np.sqrt(phot[i]/gain[i])
                 error[i] = np.sqrt(phot_error[i]**2+bg_e[i]**2)
-                to_mag=lambda x:np.sign(x)*(-2.5)*np.log10(np.sign(x)*x*10**(-9))
+                
+                if survey == Survey.sdss:
+                    to_mag=lambda x:np.sign(x)*(-2.5)*np.log10(np.sign(x)*x*10**(-9))
+                
+                if survey == Survey.ps1:
+                    exp_time = hdr_arr[i]['EXPTIME']
+                    to_mag = lambda x : -2.5*np.log10(x/0.9375)+25 + 2.5*np.log10(exp_time)
+                
                 phot_s_mag[i]=to_mag(phot_s[i])
                 m_plus[i] = to_mag(phot_s[i]-error[i])
                 m_minus[i] = to_mag(phot_s[i] + error[i])
@@ -185,8 +194,8 @@ def phot_agn(coor,num,survey):
                 delta_minus[i] = np.absolute(m_minus[i]-phot_s_mag[i])
             else:
                 phot_s_mag[i] = -99
-                delta_minus[i] = 0
-                delta_plus[i] = 0
+                delta_minus[i] = -99
+                delta_plus[i] = -99
     except:
         print("wasn't able to perform phot_agn to AGN "+str(num))
     
@@ -195,15 +204,21 @@ def phot_agn(coor,num,survey):
 
 
 def photometry(coor_lst,img_lst,survey):
-    bands = ['u','g','r','i','z']
+    
+    if survey == Survey.sdss:
+        bands = ['u','g','r','i','z']
+        
+    if survey == Survey.ps1:
+        bands = ['g','r','i','z','y']
+    
     n=len(coor_lst)
     arr=np.array([])
     arr_eplus=np.array([])
     arr_eminus=np.array([])
     for i in range(n):
         try:
-            h=phot_agn(coor_lst[i],img_lst[i],survey)
-            temp1, temp2, temp3=h
+            h = phot_agn(coor_lst[i],img_lst[i],survey)
+            temp1, temp2, temp3 = h
             arr = np.append(arr, temp1)
             arr_eplus = np.append(arr_eplus, temp2)
             arr_eminus = np.append(arr_eminus, temp3)
@@ -246,7 +261,7 @@ def photBG(centerX,centerY,data,small,medium,large):
     #sd=np.sqrt(np.abs(medbg))*np.sign(medbg)
     return (medbg,sd)
 
-#returns the array of the bg. not being used in the code
+'''#returns the array of the bg. not being used in the code
 def photBG_arr(centerX,centerY,data,small,medium,large):
     bgColl=np.array([])
     for i in range(math.floor(centerX-large),math.ceil(centerX+large)):
@@ -261,32 +276,61 @@ def WholeBG(data):
     med=np.median(data)
     #med_error=np.std(data)/np.sqrt(len(data)*len(data[0]))
     med_error=np.std(data)/np.sqrt(1489*2048)
-    return (med, med_error)
+    return (med, med_error)'''
 
 #combines the 3 tables to one dataframe
-def create_table(data,plus,minus):
+def create_table(data,plus,minus,survey):
     
-    df = pd.DataFrame(data[:,[0]],columns=['u'])
-    df = df.assign(u_minus=minus[:,[0]])
-    df = df.assign(u_plus=plus[:,[0]])
-    df=df.assign(g=data[:,[1]])
-    df = df.assign(g_minus=minus[:,[1]])
-    df = df.assign(g_plus=plus[:,[1]])
-    df=df.assign(r=data[:,[2]])
-    df = df.assign(r_minus=minus[:,[2]])
-    df = df.assign(r_plus=plus[:,[2]])
-    df=df.assign(i=data[:,[3]])
-    df = df.assign(i_minus=minus[:,[3]])
-    df = df.assign(i_plus=plus[:,[3]])
-    df=df.assign(z=data[:,[4]])
-    df = df.assign(z_minus=minus[:,[4]])
-    df = df.assign(z_plus=plus[:,[4]])
+    if survey == Survey.sdss:
+        df = pd.DataFrame(data[:,[0]],columns=['u'])
+        df = df.assign(u_minus=minus[:,[0]])
+        df = df.assign(u_plus=plus[:,[0]])
+        df=df.assign(g=data[:,[1]])
+        df = df.assign(g_minus=minus[:,[1]])
+        df = df.assign(g_plus=plus[:,[1]])
+        df=df.assign(r=data[:,[2]])
+        df = df.assign(r_minus=minus[:,[2]])
+        df = df.assign(r_plus=plus[:,[2]])
+        df=df.assign(i=data[:,[3]])
+        df = df.assign(i_minus=minus[:,[3]])
+        df = df.assign(i_plus=plus[:,[3]])
+        df=df.assign(z=data[:,[4]])
+        df = df.assign(z_minus=minus[:,[4]])
+        df = df.assign(z_plus=plus[:,[4]])
+    
+    if survey == Survey.ps1:
+        df = pd.DataFrame(data[:,[0]],columns=['g'])
+        df = df.assign(g_minus=minus[:,[0]])
+        df = df.assign(g_plus=plus[:,[0]])
+        df=df.assign(r=data[:,[1]])
+        df = df.assign(r_minus=minus[:,[1]])
+        df = df.assign(r_plus=plus[:,[1]])
+        df=df.assign(i=data[:,[2]])
+        df = df.assign(i_minus=minus[:,[2]])
+        df = df.assign(i_plus=plus[:,[2]])
+        df=df.assign(z=data[:,[3]])
+        df = df.assign(z_minus=minus[:,[3]])
+        df = df.assign(z_plus=plus[:,[3]])
+        df=df.assign(y=data[:,[4]])
+        df = df.assign(y_minus=minus[:,[4]])
+        df = df.assign(y_plus=plus[:,[4]])
+    
+    return df
     
 
 def get_error_agn():
     return error_agn
-    
 
+def get_convertion(survey,hdr):
+    convertion = 0
+    if survey == Survey.sdss:
+        convertion = np.sqrt((hdr[0]['CD1_2']*3600)**2+(hdr[0]['CD2_2']*3600)**2)
+    if survey == Survey.ps1:
+        convertion = hdr[0]['CDELT1']*3600
     
+    
+    return convertion
+    
+ 
 
 
