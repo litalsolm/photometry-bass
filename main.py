@@ -8,16 +8,16 @@ from photutils import aperture_photometry
 from astropy.wcs import WCS
 import glob
 import math
-import sdss_photometry
+import bass_photometry
 import pandas as pd
 import csv
-from sdss_photometry import Survey
+from bass_photometry import Survey
 from collections import defaultdict
 
 # [g,i,r,u,z]
 
-#sdss_file = '/home/litalsol/Documents/astro/Skyserver_SQL5_18_2020 9_05_37 AM.csv'
-sdss_file = '/home/litalsol/Documents/astro/stars_coor_ps1_test_csv_8_12_2020.csv'
+sdss_file = '/home/litalsol/Documents/astro/Skyserver_SQL5_18_2020 9_05_37 AM.csv'
+#sdss_file = '/home/litalsol/Documents/astro/stars_coor_ps1_test_csv_8_12_2020.csv'
 ps1_file = '/home/litalsol/Documents/astro/stars_coor_ps1_test_csv_8_12_2020.csv' #this is the file I get from ps1 catalog search
 
 #data array = [{g:{psfMajorFWHM:..., psfMinorFWHM:...},i:{},...},{}] -> to get data of the first target data_array[0]
@@ -67,11 +67,11 @@ def extract_data_from_sdss(sdss_file):
 
 coor_sdss, columns_sdss = extract_data_from_sdss(sdss_file)
 data_array_sdss = []
-h_sdss = sdss_photometry.photometry(coor_sdss,columns_sdss['col0'],Survey.sdss, data_array_sdss)
+h_sdss = bass_photometry.photometry(coor_sdss,columns_sdss['col0'],Survey.sdss, data_array_sdss)
 
 
 #coor_ps1, columns_ps1,data_array_ps1 = extract_data_from_ps1(ps1_file)
-#h_ps1 = sdss_photometry.photometry(coor_ps1,columns_ps1['target'],Survey.ps1,data_array_ps1 )
+#h_ps1 = bass_photometry.photometry(coor_ps1,columns_ps1['target'],Survey.ps1,data_array_ps1 )
 
 
 df = pd.DataFrame(h_sdss[0],columns=['u','g','r','i','z'])
@@ -83,7 +83,7 @@ df_eplus = df_eplus.assign(ra=columns_sdss['ra'],dec=columns_sdss['dec'],ID=colu
 df_eminus = pd.DataFrame(h_sdss[2],columns=['u','g','r','i','z'])
 df_eminus = df_eminus.assign(ra=columns_sdss['ra'],dec=columns_sdss['dec'],ID=columns_sdss['col0'])
 
-ph=sdss_photometry.create_table(h_sdss[0],h_sdss[1],h_sdss[2],Survey.sdss)
+ph=bass_photometry.create_table(h_sdss[0],h_sdss[1],h_sdss[2],Survey.sdss)
 ph = ph.assign(ra=columns_sdss['ra'],dec=columns_sdss['dec'],ID=columns_sdss['col0'])
 
 print(ph)
@@ -98,7 +98,7 @@ df_eplus = df_eplus.assign(ra=columns_ps1['_ra_'],dec=columns_ps1['_dec_'],ID=co
 df_eminus = pd.DataFrame(h_ps1[2],columns=['g','r','i','z','y'])
 df_eminus = df_eminus.assign(ra=columns_ps1['_ra_'],dec=columns_ps1['_dec_'],ID=columns_ps1['target'])
 
-ph=sdss_photometry.create_table(h_ps1[0],h_ps1[1],h_ps1[2],Survey.ps1)
+ph=bass_photometry.create_table(h_ps1[0],h_ps1[1],h_ps1[2],Survey.ps1)
 ph = ph.assign(ra=columns_ps1['_ra_'],dec=columns_ps1['_dec_'],ID=columns_ps1['target'])
 
 print(ph)
