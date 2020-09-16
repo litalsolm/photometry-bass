@@ -110,15 +110,15 @@ def photBG(centerX,centerY,data,radii):
     bgColl=np.array([])
     for i in range(math.floor(centerX-radii[2]),math.ceil(centerX+radii[2])):
         for j in range(math.floor(centerY-radii[2]),math.ceil(centerY+radii[2])):
-            distance=np.sqrt((i-centerX)**2+(j-centerY)**2)
-            if distance<radii[2] and distance>radii[1]:
+            distance=np.sqrt(((i-centerX)**2)+((j-centerY)**2))
+            if distance <= radii[2] and distance >= radii[1]:
                 bgColl=np.append(bgColl,data[j][i])
     medbg=np.median(bgColl)
     sd=np.std(bgColl)/np.sqrt(len(bgColl)) #inaccuracy
     #sd=np.sqrt(np.abs(medbg))*np.sign(medbg)
     return (medbg,sd)
 
-# find the photometry using aperture_photometry, no bg substracted for one object in each band.
+# finds the photometry using aperture_photometry, no bg substracted for one object in each band.
 # input: coor = a tuple representing sky coordinates (ea, dec); num = in representing the object ID in bass; survey = as above; 
 # data_dict = same as in find_rad.
 # output: an array of size 5, each value representing the sum count of the object inside a radius (each survey has different count)
@@ -186,7 +186,7 @@ def phot_agn(coor,num,survey, data_dict):
             if not miss.all(): # if the fits file exists
                 if (survey == Survey.ps1):
                     radius = find_rad(data_dict[bands_ps1[i]],i, survey)
-                radii = np.array([radius, radius+3, radius+4])/conv
+                radii = np.array([radius, radius+5, radius+8])/conv
                 med_bg[i],bg_error[i] = photBG(pix_lst[i][0],pix_lst[i][1],data_arr[i],radii) #calculating bg and error in bg
                 if survey == Survey.sdss:
                     gain[i]=hdr_arr[i]['NMGY'] #gain = data units to photons
@@ -195,7 +195,7 @@ def phot_agn(coor,num,survey, data_dict):
 
             
         bg_sum = med_bg * np.pi*(radii[0]**2) # the bg within the inner aperture
-        bg_e = bg_error*np.pi*(radii[0]**2) # the error of the bg
+        bg_e = bg_error*np.sqrt(np.pi*(radii[0]**2)) # the error of the bg
     except:
         print("wasn't able to perform photBG to AGN "+str(num))
     

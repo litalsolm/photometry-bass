@@ -12,7 +12,6 @@ import numpy as np
 import os
 import bz2
 from bs4 import BeautifulSoup
-import sys
 
 
 
@@ -112,7 +111,6 @@ def find_indexes(soup): # finds the location of the cutout download fits in the 
             indices[4] = i
     filter_lst = {indices[0]:'g', indices[1]:'r',indices[2]:'i',indices[3]:'z',indices[4]:'y'}
     return filter_lst
-    
 
 
 
