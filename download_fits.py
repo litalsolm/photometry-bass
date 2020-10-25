@@ -115,7 +115,7 @@ def find_indexes(soup): # finds the location of the cutout download fits in the 
 
 
 
-file_dir = '/home/litalsol/Documents/astro/bass_test.csv' #in the future when I want to download all the fits files, I will replace this file with 'BAT_catalog_for_cross_id.csv'
+file_dir = '/home/litalsol/Documents/astro/tables/stars_coor.csv' #in the future when I want to download all the fits files, I will replace this file with 'BAT_catalog_for_cross_id.csv'
 file_dir2 = '/home/litalsol/Documents/astro/Skyserver_SQL5_18_2020 9_05_37 AM.csv'
 #download_sdss(file_dir2)
 download_ps1(file_dir)

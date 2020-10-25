@@ -17,8 +17,8 @@ from astropy.coordinates import SkyCoord
 # [g,i,r,u,z]
 
 sdss_file = '/home/litalsol/Documents/astro/tables/Skyserver_SQL5_18_2020 9_05_37 AM.csv' # the sdss cross-id output 
-ps1_file = '/home/litalsol/Documents/astro/tables/bass_test_csv_9_16_2020.csv' # the ps1 catalog search output file
-ps1_targets_file = "/home/litalsol/Documents/astro/tables/bass_test.csv" # the input file for ps1 catalog search
+ps1_file = '/home/litalsol/Documents/astro/tables/stars_coor_csv_25_10_2020.csv' # the ps1 catalog search output file
+ps1_targets_file = "/home/litalsol/Documents/astro/tables/stars_coor.csv" # the input file for ps1 catalog search
 
 #data array = [{g:{psfMajorFWHM:..., psfMinorFWHM:...},i:{},...},{}] -> to get data of the first target data_array[0]
 #coor_ps1 = list of coor tuples [(ra,dec),(ra,dec)...]
@@ -44,13 +44,13 @@ def extract_data_from_ps1(ps1_file,ps1_targets_file):
     bass_ids = [int(i) for i in columns_ps1_targets['target']]
     
     for i in range(len(targets)):
-        targets[i] = bass_ids[targets[i]]
+        targets[i] = str(bass_ids[targets[i]])
     
     zipped = zip(ra,dec)
     coor_ps1 = list(zipped)
 
     bands = ['g','r','i','z','y']
-    columns = ['psfMajorFWHM','psfMinorFWHM','ApFillFac','ApRadius'] 
+    columns = ['psfMajorFWHM','psfMinorFWHM','ApFillFac','ApRadius','PSFMag'] 
     data_array = [0]*len(ra)
     for i in range(len(ra)):
         data_dict = {}
@@ -118,6 +118,37 @@ ph = ph.assign(ra=columns_ps1['_ra_'],dec=columns_ps1['_dec_'],ID=targets)
 print(ph)
 ph.to_csv('/home/litalsol/Documents/astro/photometry_ps1.csv')
 
+
+def create_distribution(h,data_array):
+    bands = ['g', 'r', 'i', 'z', 'y']
+    sample = np.array([])
+    for i in range(len(h[0])):
+        obj = np.zeros(5)
+        for j in range (5):
+            obj[j] = data_array[i][bands[j]]['PSFMag']
+        sample = np.append(sample, obj)
+    sample = np.reshape(sample,(-1,5))
+        
+    diff =  h[0] - sample
+    
+    obj_diff_avg = np.zeros(len(h[0])) # the avarage of the differnce per object
+    band_diff_avg = np.zeros(5) # the avg of the differnce per band
+    obj_diff_var = np.zeros(len(h[0]))
+    band_diff_var = np.zeros(5)
+    
+    for i in range(len(h[0])):
+        obj_diff_avg[i] = np.average(diff[i])
+        obj_diff_var[i] = np.var(diff[i])
+    
+    for j in range(5):
+        band_diff_avg[j] = np.average(diff[:, j])
+        band_diff_var[j] = np.var(diff[:,j])
+    
+    d = {"avarage":band_diff_avg, "variance":band_diff_var}
+    df = pd.DataFrame(data=d)
+    df.to_csv('/home/litalsol/Documents/astro/diff_psf_band.csv')
+    
+    return (obj_diff_avg,obj_diff_var,band_diff_avg,band_diff_var)
 
 
     

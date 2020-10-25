@@ -85,7 +85,9 @@ def find_rad(data_dict,j,survey): #psf aperture
         rad = 1.5 #the psf of sdss is noe available so we use a fixed radius here
     if survey == Survey.ps1: 
         rad = (data_dict['psfMinorFWHM']+data_dict['psfMajorFWHM'])/2    #when using psf as radius
-      #  rad = data_dict['ApRadius']  # when using fixed radius given by the data
+        #rad = data_dict['ApRadius']  # when using fixed radius given by the data
+        if data_dict['psfMinorFWHM']==0 and data_dict['psfMajorFWHM']==0:
+            rad = 1.5
     return rad
 
 # find the convertion from sky units to pixels (1 sky-unit = 1/conv pixels)
@@ -185,8 +187,8 @@ def phot_agn(coor,num,survey, data_dict):
             miss = data_arr[i] == np.array([-99])
             if not miss.all(): # if the fits file exists
                 if (survey == Survey.ps1):
-                    radius = find_rad(data_dict[bands_ps1[i]],i, survey)
-                radii = np.array([radius, radius+5, radius+8])/conv
+                    radius = find_rad(data_dict[bands_ps1[i]],i, survey)/conv
+                radii = np.array([radius, radius*2, radius*3])
                 med_bg[i],bg_error[i] = photBG(pix_lst[i][0],pix_lst[i][1],data_arr[i],radii) #calculating bg and error in bg
                 if survey == Survey.sdss:
                     gain[i]=hdr_arr[i]['NMGY'] #gain = data units to photons
