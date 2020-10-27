@@ -24,6 +24,33 @@ ps1_targets_file = "/home/litalsol/Documents/astro/tables/stars_coor.csv" # the 
 #coor_ps1 = list of coor tuples [(ra,dec),(ra,dec)...]
 #columns_ps1 = the rest of the columns from the file. columns_ps1[_ra_] = all the ra's.
 def extract_data_from_ps1(ps1_file,ps1_targets_file):  
+    
+    lines = list()
+
+    with open(ps1_file, 'r') as csv_file:
+        reader = csv.reader(csv_file)
+        curr = next(reader)
+        lines.append(curr)
+        for row in reader:
+            lines.append(row)
+            if row[2] == curr[2]:
+                if row[6] != curr[6]:
+                    if float(row[6]) < float(curr[6]):
+                        lines.remove(curr)
+                    else:
+                        lines.remove(row)
+                        
+                else:
+                    if float(row[162]) < float(curr[162]):
+                        lines.remove(curr)
+                    else:
+                        lines.remove(row)
+            curr = row
+            
+    with open(ps1_file, 'w') as writeFile:
+        writer = csv.writer(writeFile)
+        writer.writerows(lines)
+    
     columns_ps1 = defaultdict(list)
     with open(ps1_file,'r') as csv_file: 
         csv_reader = csv.DictReader(csv_file)
@@ -50,7 +77,7 @@ def extract_data_from_ps1(ps1_file,ps1_targets_file):
     coor_ps1 = list(zipped)
 
     bands = ['g','r','i','z','y']
-    columns = ['psfMajorFWHM','psfMinorFWHM','ApFillFac','ApRadius','PSFMag'] 
+    columns = ['psfMajorFWHM','psfMinorFWHM','ApFillFac','ApRadius','PSFMag','ApMag'] 
     data_array = [0]*len(ra)
     for i in range(len(ra)):
         data_dict = {}
@@ -83,11 +110,6 @@ def extract_data_from_sdss(sdss_file):
 #data_array_sdss = []
 #h_sdss = bass_photometry.photometry(coor_sdss,columns_sdss['col0'],Survey.sdss, data_array_sdss)
 
-
-coor_ps1, columns_ps1,data_array_ps1, targets = extract_data_from_ps1(ps1_file,ps1_targets_file)
-h_ps1 = bass_photometry.photometry(coor_ps1,targets,Survey.ps1,data_array_ps1 )
-
-
 '''df = pd.DataFrame(h_sdss[0],columns=['u','g','r','i','z'])
 df = df.assign(ra=columns_sdss['ra'],dec=columns_sdss['dec'],ID=columns_sdss['col0'])
 
@@ -103,20 +125,25 @@ ph = ph.assign(ra=columns_sdss['ra'],dec=columns_sdss['dec'],ID=columns_sdss['co
 print(ph)
 ph.to_csv('/home/litalsol/Documents/astro/photometry_sdss.csv')'''
 
-df = pd.DataFrame(h_ps1[0],columns=['g','r','i','z','y'])
-df = df.assign(ra=columns_ps1['_ra_'],dec=columns_ps1['_dec_'],ID=targets)
+def calc_phot_ps1():
+    coor_ps1, columns_ps1,data_array_ps1, targets = extract_data_from_ps1(ps1_file,ps1_targets_file)
+    h_ps1 = bass_photometry.photometry(coor_ps1,targets,Survey.ps1,data_array_ps1)
 
-df_eplus = pd.DataFrame(h_ps1[1],columns=['g','r','i','z','y'])
-df_eplus = df_eplus.assign(ra=columns_ps1['_ra_'],dec=columns_ps1['_dec_'],ID=targets)
-
-df_eminus = pd.DataFrame(h_ps1[2],columns=['g','r','i','z','y'])
-df_eminus = df_eminus.assign(ra=columns_ps1['_ra_'],dec=columns_ps1['_dec_'],ID=targets)
-
-ph=bass_photometry.create_table(h_ps1[0],h_ps1[1],h_ps1[2],Survey.ps1)
-ph = ph.assign(ra=columns_ps1['_ra_'],dec=columns_ps1['_dec_'],ID=targets)
-
-print(ph)
-ph.to_csv('/home/litalsol/Documents/astro/photometry_ps1.csv')
+    df = pd.DataFrame(h_ps1[0],columns=['g','r','i','z','y'])
+    df = df.assign(ra=columns_ps1['_ra_'],dec=columns_ps1['_dec_'],ID=targets)
+    
+    df_eplus = pd.DataFrame(h_ps1[1],columns=['g','r','i','z','y'])
+    df_eplus = df_eplus.assign(ra=columns_ps1['_ra_'],dec=columns_ps1['_dec_'],ID=targets)
+    
+    df_eminus = pd.DataFrame(h_ps1[2],columns=['g','r','i','z','y'])
+    df_eminus = df_eminus.assign(ra=columns_ps1['_ra_'],dec=columns_ps1['_dec_'],ID=targets)
+    
+    ph=bass_photometry.create_table(h_ps1[0],h_ps1[1],h_ps1[2],Survey.ps1)
+    ph = ph.assign(ra=columns_ps1['_ra_'],dec=columns_ps1['_dec_'],ID=targets)
+    
+    print(ph)
+    ph.to_csv('/home/litalsol/Documents/astro/photometry_ps1.csv')
+    return (h_ps1, data_array_ps1)
 
 
 def create_distribution(h,data_array):
@@ -125,11 +152,11 @@ def create_distribution(h,data_array):
     for i in range(len(h[0])):
         obj = np.zeros(5)
         for j in range (5):
-            obj[j] = data_array[i][bands[j]]['PSFMag']
+            obj[j] = data_array[i][bands[j]]['ApMag']
         sample = np.append(sample, obj)
     sample = np.reshape(sample,(-1,5))
         
-    diff =  h[0] - sample
+    diff =  sample - h[0]
     
     obj_diff_avg = np.zeros(len(h[0])) # the avarage of the differnce per object
     band_diff_avg = np.zeros(5) # the avg of the differnce per band
@@ -146,9 +173,10 @@ def create_distribution(h,data_array):
     
     d = {"avarage":band_diff_avg, "variance":band_diff_var}
     df = pd.DataFrame(data=d)
-    df.to_csv('/home/litalsol/Documents/astro/diff_psf_band.csv')
+    df.to_csv('/home/litalsol/Documents/astro/diff_const_rad_band.csv')
     
     return (obj_diff_avg,obj_diff_var,band_diff_avg,band_diff_var)
+
 
 
     

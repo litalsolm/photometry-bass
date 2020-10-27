@@ -84,8 +84,8 @@ def find_rad(data_dict,j,survey): #psf aperture
     if survey == Survey.sdss:
         rad = 1.5 #the psf of sdss is noe available so we use a fixed radius here
     if survey == Survey.ps1: 
-        rad = (data_dict['psfMinorFWHM']+data_dict['psfMajorFWHM'])/2    #when using psf as radius
-        #rad = data_dict['ApRadius']  # when using fixed radius given by the data
+        #rad = (data_dict['psfMinorFWHM']+data_dict['psfMajorFWHM'])/2    #when using psf as radius
+        rad = data_dict['ApRadius']  # when using fixed radius given by the data
         if data_dict['psfMinorFWHM']==0 and data_dict['psfMajorFWHM']==0:
             rad = 1.5
     return rad
@@ -144,8 +144,8 @@ def Skyaperture_agn(coor,num,survey,data_dict): #data_dict = the dictionary {g:{
                 phot_table['aperture_sum'].info.format = '%.8g' 
                 value = phot_table['aperture_sum'][0] #value in nanomaggy
                 if (survey == Survey.ps1):
-                    #value = value/data_dict[bands_ps1[j]]['ApFillFac'] #when using const radius
-                    value = value/0.9375 #when usinf psf as radius
+                    value = value/data_dict[bands_ps1[j]]['ApFillFac'] #when using const radius
+                    #value = value/0.9375 #when usinf psf as radius
                 arr[j] = value
                 #value = 3.631*(10**(-29))*value #value in erg/sec*cm^2*Hz
             except:
