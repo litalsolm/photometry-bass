@@ -115,8 +115,8 @@ def photBG(centerX,centerY,data,radii):
             distance=np.sqrt(((i-centerX)**2)+((j-centerY)**2))
             if distance <= radii[2] and distance >= radii[1]:
                 bgColl=np.append(bgColl,data[j][i])
-    medbg=np.median(bgColl)
-    sd=np.std(bgColl)/np.sqrt(len(bgColl)) #inaccuracy
+    medbg = np.median(bgColl)
+    sd = np.std(bgColl)/np.sqrt(len(bgColl)) #inaccuracy
     #sd=np.sqrt(np.abs(medbg))*np.sign(medbg)
     return (medbg,sd)
 
