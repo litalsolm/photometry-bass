@@ -10,14 +10,14 @@ import matplotlib.pyplot as plt
 
 # [g,i,r,u,z]
 
-sdss_file = '/home/litalsol/Documents/astro/tables/Skyserver_SQL5_18_2020 9_05_37 AM.csv' # the sdss cross-id output 
-ps1_file = '/home/litalsol/Documents/astro/tables/stars_coor_csv_25_10_2020.csv' # the ps1 catalog search output file
-ps1_targets_ps1_file = "/home/litalsol/Documents/astro/tables/stars_coor.csv" # the input file for ps1 catalog search
+sdss_file = '/home/litalsol/Documents/astro/tables/Skyserver_Spectro11_16_2020 1_27_33 PM.csv' # the sdss cross-id output 
+ps1_file = '/home/litalsol/Documents/astro/tables/stars_coor_csv_16_11_2020.csv' # the ps1 catalog search output file
+ps1_targets_file = "/home/litalsol/Documents/astro/tables/stars_coor.csv" # the input file for ps1 catalog search
 
 #data array = [{g:{psfMajorFWHM:..., psfMinorFWHM:...},i:{},...},{}] -> to get data of the first target data_array[0]
 #coor_ps1 = list of coor tuples [(ra,dec),(ra,dec)...]
 #columns_ps1 = the rest of the columns from the file. columns_ps1[_ra_] = all the ra's.
-def extract_data_from_ps1(ps1_file,ps1_targets_ps1_file):  
+def extract_data_from_ps1(ps1_file,ps1_targets_file):  
     
     lines = list()
 
@@ -52,17 +52,18 @@ def extract_data_from_ps1(ps1_file,ps1_targets_ps1_file):
             for (k,v) in row.items():
                 columns_ps1[k].append(v)
     
-    columns_ps1_targets_ps1 = defaultdict(list)
-    with open(ps1_targets_ps1_file,'r') as csv_file: 
+    ps1_targets_columns = defaultdict(list)
+    with open(ps1_targets_file,'r') as csv_file: 
         csv_reader = csv.DictReader(csv_file)
         for row in csv_reader:
             for (k,v) in row.items():
-                columns_ps1_targets_ps1[k].append(v)
+                ps1_targets_columns[k].append(v)
                 
     ra = [float(i) for i in columns_ps1['_ra_']]
     dec = [float(i) for i in columns_ps1['_dec_']] 
     targets_ps1 = [int(i) for i in columns_ps1['_searchID_']]
-    bass_ids = [int(i) for i in columns_ps1_targets_ps1['target']]
+    bass_ids = [int(i) for i in ps1_targets_columns['target']]
+    coor_file = [(ps1_targets_columns['ra'][i], ps1_targets_columns['dec'][i]) for i in range(len(ps1_targets_columns['ra']))]
     
     for i in range(len(targets_ps1)):
         targets_ps1[i] = str(bass_ids[targets_ps1[i]])
@@ -83,7 +84,7 @@ def extract_data_from_ps1(ps1_file,ps1_targets_ps1_file):
         data_array[i] = data_dict
         
     
-    return (coor_ps1, columns_ps1, data_array, targets_ps1)
+    return (coor_ps1, columns_ps1, data_array, targets_ps1,coor_file,bass_ids)
 
 def extract_data_from_sdss(sdss_file):
     columns_sdss = defaultdict(list)
@@ -117,19 +118,19 @@ def extract_data_from_sdss(sdss_file):
 def calc_phot_sdss():
     coor_sdss, columns_sdss = extract_data_from_sdss(sdss_file)
     data_array_sdss = []
-    h_sdss = bass_photometry.photometry(coor_sdss,columns_sdss['col0'],Survey.sdss, data_array_sdss)
+    h_sdss = bass_photometry.photometry(coor_sdss,columns_sdss['target'],Survey.sdss, data_array_sdss)
 
     df = pd.DataFrame(h_sdss[0],columns=['u','g','r','i','z'])
-    df = df.assign(ra=columns_sdss['ra'],dec=columns_sdss['dec'],ID=columns_sdss['col0'])
+    df = df.assign(ra=columns_sdss['ra'],dec=columns_sdss['dec'],ID=columns_sdss['target'])
     
     df_eplus = pd.DataFrame(h_sdss[1],columns=['u','g','r','i','z'])
-    df_eplus = df_eplus.assign(ra=columns_sdss['ra'],dec=columns_sdss['dec'],ID=columns_sdss['col0'])
+    df_eplus = df_eplus.assign(ra=columns_sdss['ra'],dec=columns_sdss['dec'],ID=columns_sdss['target'])
     
     df_eminus = pd.DataFrame(h_sdss[2],columns=['u','g','r','i','z'])
-    df_eminus = df_eminus.assign(ra=columns_sdss['ra'],dec=columns_sdss['dec'],ID=columns_sdss['col0'])
+    df_eminus = df_eminus.assign(ra=columns_sdss['ra'],dec=columns_sdss['dec'],ID=columns_sdss['target'])
     
     ph=bass_photometry.create_table(h_sdss[0],h_sdss[1],h_sdss[2],Survey.sdss)
-    ph = ph.assign(ra=columns_sdss['ra'],dec=columns_sdss['dec'],ID=columns_sdss['col0'])
+    ph = ph.assign(ra=columns_sdss['ra'],dec=columns_sdss['dec'],ID=columns_sdss['target'])
     
     print(ph)
     ph.to_csv('/home/litalsol/Documents/astro/photometry_sdss.csv')
@@ -137,7 +138,7 @@ def calc_phot_sdss():
     return h_sdss
 
 def calc_phot_ps1():
-    coor_ps1, columns_ps1,data_array_ps1, targets_ps1 = extract_data_from_ps1(ps1_file,ps1_targets_ps1_file)
+    coor_ps1, columns_ps1,data_array_ps1, targets_ps1, coor_file, bass_ids = extract_data_from_ps1(ps1_file,ps1_targets_file)
     h_ps1 = bass_photometry.photometry(coor_ps1,targets_ps1,Survey.ps1,data_array_ps1)
 
     df = pd.DataFrame(h_ps1[0],columns=['g','r','i','z','y'])
@@ -159,18 +160,11 @@ def calc_phot_ps1():
 def create_common_table():
     coor_sdss, columns_sdss = extract_data_from_sdss(sdss_file)
     data_array_sdss = []
-    h_sdss = bass_photometry.photometry(coor_sdss,columns_sdss['col0'],Survey.sdss, data_array_sdss)
-    targets_sdss = columns_sdss['col0']
+    h_sdss = bass_photometry.photometry(coor_sdss,columns_sdss['target'],Survey.sdss, data_array_sdss)
+    targets_sdss = columns_sdss['target']
     
-    #calculating ps1 photometry and sorting the data
-    coor_ps1, columns_ps1,data_array_ps1, targets_ps1 = extract_data_from_ps1(ps1_file,ps1_targets_ps1_file)
-    int_targets_ps1 = [int(targets_ps1[i]) for i in range(len(targets_ps1))]
-    for i in range(len(data_array_ps1)):
-        data_array_ps1[i]['target'] = int_targets_ps1[i]
-    data_array_ps1.sort(key = lambda x:x['target'])
-    coor_ps1 = [x for _,x in sorted(zip(int_targets_ps1,coor_ps1))]
-    columns_ps1 = [x for _,x in sorted(zip(int_targets_ps1,columns_ps1))]
-    targets_ps1 = [x for _,x in sorted(zip(int_targets_ps1,targets_ps1))]
+    #calculating ps1 photometry
+    coor_ps1, columns_ps1,data_array_ps1, targets_ps1,coor_file,bass_ids = extract_data_from_ps1(ps1_file,ps1_targets_file)
     h_ps1 = bass_photometry.photometry(coor_ps1,targets_ps1,Survey.ps1,data_array_ps1)
     
     #combining the 2 target lists
@@ -180,9 +174,18 @@ def create_common_table():
     all_targets = targets_sdss+sub_list
     all_targets.sort(key= lambda x:int(x))
     
-    bands = ['g','r','i','z']
-    
     n = len(all_targets)
+    
+    #combining the 2 coordibates lists
+    all_ra = np.array([])
+    all_dec = np.array([])
+    for i in range(len(bass_ids)):
+        if str(bass_ids[i]) in all_targets:
+            all_ra = np.append(all_ra, coor_file[i][0])
+            all_dec = np.append(all_dec, coor_file[i][1])
+    
+
+
     
     #u is only in sdss
     u_sdss = np.zeros(n)
@@ -204,9 +207,11 @@ def create_common_table():
         y_plus_ps1[index] = h_ps1[1][i][4]
         y_minus_ps1[index] = h_ps1[2][i][4]
     
+    #for the rest of the bands
+    bands = ['g','r','i','z']
     band_dict = {}
+    m = 0
     for i in bands:
-        m = 0
         band_ps1 = np.zeros(n)
         band_plus_ps1 = np.zeros(n)
         band_minus_ps1 = np.zeros(n)
@@ -225,16 +230,28 @@ def create_common_table():
             band_plus_ps1[index] = h_ps1[1][j][m]
             band_minus_ps1[index] = h_ps1[2][j][m]
         band_dict[i+'_sdss'] = band_sdss
-        band_dict[i+'_plus_sdss'] = band_sdss
-        band_dict[i+'_minus_sdss'] = band_sdss
-        band_dict[i+'_ps1'] = band_sdss
-        band_dict[i+'_plus_ps1'] = band_sdss
-        band_dict[i+'_minus_ps1'] = band_sdss
+        band_dict[i+'_plus_sdss'] = band_plus_sdss
+        band_dict[i+'_minus_sdss'] = band_minus_sdss
+        band_dict[i+'_ps1'] = band_ps1
+        band_dict[i+'_plus_ps1'] = band_plus_ps1
+        band_dict[i+'_minus_ps1'] = band_minus_ps1
         m+=1
         
-    df = pd.DataFrame(np.array([all_targets,u_sdss,u_plus_sdss,u_minus_sdss,band_dict['g_sdss'],band_dict['g_plus_sdss']]))
+    d = {'targets':all_targets,'ra':all_ra, 'dec':all_dec,
+         'u_sdss':u_sdss, 'u_plus_sdss':u_plus_sdss,'u_minus_sdss':u_minus_sdss,
+         'g_sdss':band_dict['g_sdss'],'g_plus_sdss':band_dict['g_plus_sdss'],'g_minus_sdss':band_dict['g_minus_sdss'],
+         'g_ps1':band_dict['g_ps1'],'g_plus_ps1':band_dict['g_plus_ps1'],'g_minus_ps1':band_dict['g_minus_ps1'],  
+         'r_sdss':band_dict['r_sdss'],'r_plus_sdss':band_dict['r_plus_sdss'],'r_minus_sdss':band_dict['r_minus_sdss'],
+         'r_ps1':band_dict['r_ps1'],'r_plus_ps1':band_dict['r_plus_ps1'],'r_minus_ps1':band_dict['r_minus_ps1'],
+         'i_sdss':band_dict['i_sdss'],'i_plus_sdss':band_dict['i_plus_sdss'],'i_minus_sdss':band_dict['i_minus_sdss'],
+         'i_ps1':band_dict['i_ps1'],'i_plus_ps1':band_dict['i_plus_ps1'],'i_minus_ps1':band_dict['i_minus_ps1'],
+         'z_sdss':band_dict['z_sdss'],'z_plus_sdss':band_dict['z_plus_sdss'],'z_minus_sdss':band_dict['z_minus_sdss'],
+         'z_ps1':band_dict['z_ps1'],'z_plus_ps1':band_dict['z_plus_ps1'],'z_minus_ps1':band_dict['z_minus_ps1'],
+         'y_ps1':y_ps1, 'y_plus_ps1':y_plus_ps1,'y_minus_ps1':y_minus_ps1}
+    df = pd.DataFrame(data=d)
+    df.to_csv('/home/litalsol/Documents/astro/photometry.csv')
     
-    return(df)
+    return(h_ps1, data_array_ps1, h_sdss, df)
 
     
     
@@ -334,11 +351,8 @@ def create_distribution(h,data_array):
     return (obj_diff_med,obj_diff_var,band_diff_med,band_diff_var)
 
 
-df = create_common_table()
-#stars that in sdss only dont appear in the final table
-#the colums are rows? and they have no names
 
-
+h_ps1, data_array_ps1, h_sdss, df = create_common_table()
 
     
 
