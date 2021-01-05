@@ -5,7 +5,7 @@ import pandas as pd
 import csv
 from bass_photometry import Survey
 from collections import defaultdict
-import matplotlib.pyplot as plt 
+#import matplotlib.pyplot as plt 
 import sys
 
 #sdss_file = '/home/litalsol/Documents/astro/tables/Skyserver_SQL1_5_2021_7_27_01AM.csv' # the sdss cross-id output 
@@ -281,7 +281,7 @@ def create_common_table(sdss_file, ps1_file,ps1_targets_file, path):
     
     return(df, h_ps1, data_array_ps1, h_sdss)
 
-    
+'''
 
 def create_distribution(h,data_array):
     bands = ['g', 'r', 'i', 'z', 'y']
@@ -392,15 +392,13 @@ def create_distribution(h,data_array):
     df = pd.DataFrame(data=d)
     df.to_csv('~/diff_const_rad_band_after_slicing.csv')
     return (obj_diff_med,obj_diff_var,band_diff_med,band_diff_var)
+'''
 
 
 if __name__ == "__main__":
     joint_table, h_ps1, data_array_ps1, h_sdss = create_common_table(sys.argv[1], sys.argv[2], sys.argv[3], sys.argv[4])
-    #obj_diff_med,obj_diff_var,band_diff_med,band_diff_var = create_distribution(h_ps1, data_array_ps1)
 
-    
-
-
-
+'''
 
 #create_common_table('/home/litalsol/Documents/astro/tables/Skyserver_SQL1_5_2021_7_27_01AM.csv', '/home/litalsol/Documents/astro/tables/stars_coor_csv_16_11_2020.csv', '/home/litalsol/Documents/astro/tables/stars_coor.csv', '/home/litalsol/Documents/astro/fits')
+'''
