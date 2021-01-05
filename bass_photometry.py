@@ -6,17 +6,14 @@ Created on Sun Dec 22 13:21:06 2019
 """
 
 from astropy.io import fits
-from photutils import CircularAperture
 from astropy import units as u
 from astropy.coordinates import SkyCoord
 from photutils import SkyCircularAperture
 import numpy as np
 from photutils import aperture_photometry
 from astropy.wcs import WCS
-import glob
 import math
 import pandas as pd
-import csv
 import os
 from enum import Enum, auto
 
@@ -39,7 +36,7 @@ bands_sdss = ['u','g','r','i','z']
 # wcs_arr = contains wcs of each band.
 # for either survey, fits files are extracted from well-orgenized files: fits/sdss/name-of-object/BAT_ID_name-of-object_sdss_band.fits 
 # for sdss and a similar one for ps1 (described inside the function).
-def arrays(num, survey):
+def arrays(num, survey, direc):
     
     assert isinstance(survey, Enum)
     
@@ -47,16 +44,15 @@ def arrays(num, survey):
     data_arr = [0]*n
     hdr_arr = [0]*n
     wcs_arr = [0]*n
-    path = ''
     for i in range(n):
         try: 
             if survey == Survey.sdss:
                 bands = bands_sdss
-                path='/home/litalsol/Documents/astro/fits/sdss/'+str(num).zfill(4)+'/BAT_ID_'+str(num).zfill(4)+'_sdss_'+bands[i]+'.fits'
+                path= direc + '/sdss/'+str(num).zfill(4)+'/BAT_ID_'+str(num).zfill(4)+'_sdss_'+bands[i]+'.fits'
             
             elif survey == Survey.ps1:
                 bands = bands_ps1
-                path = '/home/litalsol/Documents/astro/fits/ps1/'+str(num).zfill(4)+'/BAT_ID_'+str(num).zfill(4)+'_PS1_'+bands[i]+'_stack.fits'
+                path = direc + '/ps1/'+str(num).zfill(4)+'/BAT_ID_'+str(num).zfill(4)+'_PS1_'+bands[i]+'_stack.fits'
             
             if os.path.exists(path):
                 hdul = fits.open(path)
@@ -117,7 +113,6 @@ def photBG(centerX,centerY,data,radii):
                 bgColl=np.append(bgColl,data[j][i])
     medbg = np.median(bgColl)
     sd = np.std(bgColl)/np.sqrt(len(bgColl)) #inaccuracy
-    #sd=np.sqrt(np.abs(medbg))*np.sign(medbg)
     return (medbg,sd)
 
 # finds the photometry using aperture_photometry, no bg substracted for one object in each band.
@@ -125,8 +120,8 @@ def photBG(centerX,centerY,data,radii):
 # data_dict = same as in find_rad.
 # output: an array of size 5, each value representing the sum count of the object inside a radius (each survey has different count)
 # in a band.
-def Skyaperture_agn(coor,num,survey,data_dict): #data_dict = the dictionary {g:{}, i:{}...}
-    data_arr, hdr_arr, wcs_arr = arrays(num,survey)  
+def Skyaperture_agn(coor,num,survey,data_dict, path): #data_dict = the dictionary {g:{}, i:{}...}
+    data_arr, hdr_arr, wcs_arr = arrays(num,survey, path)  
     n = len(data_arr) # = 5 bands
     radius = 1.5 #for sdss we havn't determined a radius yet so we'll work with a fixed one
     arr=np.zeros(n)
@@ -158,13 +153,13 @@ def Skyaperture_agn(coor,num,survey,data_dict): #data_dict = the dictionary {g:{
 # input: same as in Skyaperture_agn
 # output: phot_s_mag = an array of size 5 containing the avaluation of the photometry on an object in Magnitudes in all bands; 
 # delta_plus = an array representing the up error of the photometry in magnitudes for each band; down_error = same but with doen error.
-def phot_agn(coor,num,survey, data_dict):
-    data_arr, hdr_arr, wcs_arr = arrays(num,survey)
+def phot_agn(coor,num,survey, data_dict, path):
+    data_arr, hdr_arr, wcs_arr = arrays(num,survey, path)
     n = len(data_arr) #the number of bands = 5
     conv = get_convertion(survey, hdr_arr) #from arcsec to pixels in each survey
     radius = 1.5
     
-    phot = Skyaperture_agn(coor,num,survey,data_dict)
+    phot = Skyaperture_agn(coor,num,survey,data_dict, path)
     
     #getting a list of the coor in pixels
     pix_lst = [0]*n
@@ -188,12 +183,12 @@ def phot_agn(coor,num,survey, data_dict):
             if not miss.all(): # if the fits file exists
                 if (survey == Survey.ps1):
                     radius = find_rad(data_dict[bands_ps1[i]],i, survey)/conv
+                if survey == Survey.sdss:
+                    gain[i]=1/hdr_arr[i]['NMGY'] #gain = data units to photons
+                if survey == Survey.ps1:
+                    gain[i] = hdr_arr[i]['HIERARCH CELL.GAIN']
                 radii = np.array([radius, radius*2, radius*3])
                 med_bg[i],bg_error[i] = photBG(pix_lst[i][0],pix_lst[i][1],data_arr[i],radii) #calculating bg and error in bg
-                if survey == Survey.sdss:
-                    gain[i]=hdr_arr[i]['NMGY'] #gain = data units to photons
-                if survey == Survey.ps1:
-                    gain[i] = 1/hdr_arr[i]['HIERARCH CELL.GAIN']
 
             
         bg_sum = med_bg * np.pi*(radii[0]**2) # the bg within the inner aperture
@@ -222,7 +217,7 @@ def phot_agn(coor,num,survey, data_dict):
             miss = data_arr[i] == np.array([-99])
             if not miss.all():
                 phot_s[i] = phot[i]-bg_sum[i]
-                phot_error[i] = gain[i] * np.sqrt(phot[i]/gain[i])
+                phot_error[i] = 1/gain[i] * np.sqrt(phot[i]*gain[i])
                 error[i] = np.sqrt(phot_error[i]**2+bg_e[i]**2)
                 
                 #the convertion from data units to magnitudes is different for each survey:
@@ -231,7 +226,7 @@ def phot_agn(coor,num,survey, data_dict):
                 
                 if survey == Survey.ps1:
                     exp_time = hdr_arr[i]['EXPTIME']
-                    to_mag = lambda x : -2.5*np.log10(x)+25 + 2.5*np.log10(exp_time)
+                    to_mag = lambda x : -2.5*np.log10(x)+25 + 2.5*np.log10(exp_time)  #25 is the zero point
                 
                 phot_s_mag[i]=to_mag(phot_s[i])
                 m_plus[i] = to_mag(phot_s[i]-error[i])
@@ -254,7 +249,7 @@ def phot_agn(coor,num,survey, data_dict):
 # output: arr = a matrix containing the photometry of all the objects in all the bands [[object 1], [object 2]...]; arr_eplus = a matrix
 # containing the photometry up error of all the objects in all the bands [[object 1], [object 2]...]; arr_eminus = same but with down
 # eror.
-def photometry(coor_lst,img_lst,survey,data_array):
+def photometry(coor_lst,img_lst,survey,data_array, path):
         
     n=len(coor_lst)
     arr=np.array([])
@@ -263,9 +258,9 @@ def photometry(coor_lst,img_lst,survey,data_array):
     for i in range(n): # iterating on the targets
         try:
             if (survey == Survey.ps1):    
-                phot_s_mag,delta_plus,delta_minus = phot_agn(coor_lst[i],img_lst[i],survey, data_array[i])
+                phot_s_mag,delta_plus,delta_minus = phot_agn(coor_lst[i],img_lst[i],survey, data_array[i], path)
             if (survey == Survey.sdss):
-                phot_s_mag,delta_plus,delta_minus = phot_agn(coor_lst[i],img_lst[i],survey, {})
+                phot_s_mag,delta_plus,delta_minus = phot_agn(coor_lst[i],img_lst[i],survey, {}, path)
             arr = np.append(arr, phot_s_mag)
             arr_eplus = np.append(arr_eplus, delta_plus)
             arr_eminus = np.append(arr_eminus, delta_minus)

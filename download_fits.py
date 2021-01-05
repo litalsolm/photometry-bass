@@ -12,10 +12,11 @@ import numpy as np
 import os
 import bz2
 from bs4 import BeautifulSoup
+import sys
 
 
-
-def download_sdss (file_dir):
+# input: the output file from sdss cross-id and path to download the images to.
+def download_sdss (file_dir, direc):
     with open(file_dir,'r') as csv_file: #opens the file that i get from cross-id
         csv_reader = csv.reader(csv_file)
         ra_lst=np.array([])
@@ -26,8 +27,9 @@ def download_sdss (file_dir):
         camcol_lst=np.array([])
         field_lst=np.array([])
         
-        next(csv_reader,None)
-        next(csv_reader,None)
+        
+        if next(csv_reader,None)[0] == '#Table1':
+            next(csv_reader,None)
         for line in csv_reader:
             name_lst=np.append(name_lst,line[0])
             ra_lst=np.append(ra_lst,float(line[2])) 
@@ -40,7 +42,7 @@ def download_sdss (file_dir):
     n = len(name_lst)
     filter_lst = ['u','g','r','i','z']
     for i in range(n):
-        path = '/home/litalsol/Documents/astro/fits/sdss/'+name_lst[i].zfill(4)
+        path = direc + '/sdss/' +  name_lst[i].zfill(4)
         if not os.path.exists(path):
             os.mkdir(path)
         for fil in filter_lst:
@@ -58,8 +60,8 @@ def download_sdss (file_dir):
                     print("did not download fits files of ANG "+name_lst[i]+" filter "+fil)
                 
         
-
-def download_ps1(file_dir):
+# input: the dir of a csv containing the columns: target, ra, dec, and a path to download thr files to. Downloads the fits files of the targets to
+def download_ps1(file_dir, direc):
     url = "https://ps1images.stsci.edu/cgi-bin/ps1cutouts?pos=%s+%s&filter=color&filetypes=stack&auxiliary=data&size=480&output_size=0&verbose=0&autoscale=99.500000&catlist="
     ra_lst=np.array([])
     dec_lst=np.array([])
@@ -79,7 +81,7 @@ def download_ps1(file_dir):
             soup = BeautifulSoup(r.text, 'html.parser')
             h = soup.find_all('h2')
             if len(h) == 1 or h[1].text.strip() != 'No PS1 3PI images were found at the search position':
-                path = '/home/litalsol/Documents/astro/fits/ps1/'+name_lst[i].zfill(4)
+                path = direc +'/ps1/' +  name_lst[i].zfill(4)
                 filter_lst = find_indexes(soup)
                 if not os.path.exists(path):
                     os.mkdir(path)
@@ -113,12 +115,20 @@ def find_indexes(soup): # finds the location of the cutout download fits in the 
     return filter_lst
 
 
-
-
-file_dir = '/home/litalsol/Documents/astro/tables/pan_test.csv' #in the future when I want to download all the fits files, I will replace this file with 'BAT_catalog_for_cross_id.csv'
-file_dir2 = '/home/litalsol/Documents/astro/tables/Skyserver_Spectro11_16_2020 1_27_33 PM.csv'
-download_sdss(file_dir2)
+def download_all(file_dir_ps1, file_dir_sdss, path):
+    download_ps1(file_dir_ps1, path)
+    download_sdss(file_dir_sdss, path)
+    
+#download_ps1('/home/litalsol/Documents/astro/tables/stars_coor.csv', '/home/litalsol/Documents/astro/fits')
+download_sdss('/home/litalsol/Documents/astro/tables/Skyserver_SQL1_5_2021_7_27_01AM.csv', '/home/litalsol/Documents/astro/fits') 
+#file_dir = '/home/litalsol/Documents/astro/tables/stars_coor.csv' #in the future when I want to download all the fits files, I will replace this file with 'BAT_catalog_for_cross_id.csv'
+#file_dir2 = '/home/litalsol/Documents/astro/tables/Skyserver_SQL1_5_2021_7_27_01AM.csv'
+#download_sdss(file_dir2)
 #download_ps1(file_dir)
+'''
+if __name__ == "__main__":
+ #   download_all(sys.argv[1], sys.argv[2], sys.argv[3])
+    #download_ps1(sys.argv[1], sys.argv[3])
+    download_sdss(sys.argv[2], sys.argv[3])
 
-
-        
+        '''
