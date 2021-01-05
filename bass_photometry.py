@@ -15,12 +15,12 @@ from astropy.wcs import WCS
 import math
 import pandas as pd
 import os
-from enum import Enum, auto
+from enum import Enum
 
 #to make sure there no typos, the survey can only be given as an enum. in case of more surveys, add more enums and adjust each function.
 class Survey(Enum):
-    sdss = auto()
-    ps1 = auto()
+    sdss = 1
+    ps1 = 2
 
 error_agn = []
 
