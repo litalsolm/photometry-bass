@@ -3,7 +3,7 @@ import numpy as np
 import bass_photometry
 import pandas as pd
 import csv
-from bass_photometry import Survey
+from bass_photometry import Survey, Aperture
 from collections import defaultdict
 #import matplotlib.pyplot as plt 
 import sys
@@ -12,7 +12,8 @@ import sys
 #ps1_file = '/home/litalsol/Documents/astro/tables/stars_coor_csv_16_11_2020.csv' # the ps1 catalog search output file
 #ps1_targets_file = "/home/litalsol/Documents/astro/tables/stars_coor.csv" # the input file for ps1 catalog search
 
-# to activate from terminal: >> photometry-bass/photometry-bass >> python main.py /home/litalsol/Documents/astro/tables/Skyserver_Spectro11_16_2020_1_27_33PM.csv /home/litalsol/Documents/astro/tables/stars_coor_csv_16_11_2020.csv /home/litalsol/Documents/astro/tables/stars_coor.csv
+# to activate from terminal: >> photometry-bass/photometry-bass >> python main.py /home/litalsol/Documents/astro/tables//home/litalsol/Documents/astro/tables/Skyserver_SQL1_5_2021_7_27_01AM.csv /home/litalsol/Documents/astro/tables/stars_coor_csv_16_11_2020.csv /home/litalsol/Documents/astro/tables/stars_coor.csv /home/litalsol/Documents/astro/fits
+
 
 #data array = [{g:{psfMajorFWHM:..., psfMinorFWHM:...},i:{},...},{}] -> to get data of the first target data_array[0]
 #coor_ps1 = list of coor tuples [(ra,dec),(ra,dec)...]
@@ -70,7 +71,7 @@ def extract_data_from_ps1(ps1_file,ps1_targets_file):
     coor_ps1 = list(zipped)
 
     bands = ['g','r','i','z','y']
-    columns = ['psfMajorFWHM','psfMinorFWHM','ApFillFac','ApRadius','PSFMag','ApMag','ApMagErr'] 
+    columns = ['psfMajorFWHM','psfMinorFWHM','ApFillFac','ApRadius','PSFMag','PSFMagErr','ApMag','ApMagErr'] 
     data_array = [0]*len(ra)
     for i in range(len(ra)):
         data_dict = {}
@@ -160,7 +161,7 @@ def calc_phot_ps1(ps1_file, ps1_targets_file, path):
     ph.to_csv('/home/litalsol/Documents/astro/photometry_ps1.csv')
     return (h_ps1, data_array_ps1)
 
-def create_common_table(sdss_file, ps1_file,ps1_targets_file, path):
+def create_common_table(sdss_file, ps1_file,ps1_targets_file, path, aperture):
     #calculating sdss photometry
     coor_sdss, columns_sdss = extract_data_from_sdss(sdss_file)
     data_array_sdss = []
@@ -169,7 +170,7 @@ def create_common_table(sdss_file, ps1_file,ps1_targets_file, path):
     
     #calculating ps1 photometry
     coor_ps1, columns_ps1,data_array_ps1, targets_ps1,coor_file,bass_ids = extract_data_from_ps1(ps1_file,ps1_targets_file)
-    h_ps1 = bass_photometry.photometry(coor_ps1,targets_ps1,Survey.ps1,data_array_ps1, path)
+    h_ps1 = bass_photometry.photometry(coor_ps1,targets_ps1,Survey.ps1,data_array_ps1, path, aperture)
     
     #combining the 2 target lists
     set_sdss = set(targets_sdss)
@@ -283,17 +284,21 @@ def create_common_table(sdss_file, ps1_file,ps1_targets_file, path):
 
 '''
 
-def create_distribution(h,data_array):
+def create_distribution(h, data_array, aperture):
     bands = ['g', 'r', 'i', 'z', 'y']
     sample = np.array([])
     error = np.array([])
     for i in range(len(h[0])):
         val_obj = np.zeros(5)
         err_obj = np.zeros(5)
-        for j in range (5):
-            #val_obj[j] = data_array[i][bands[j]]['PSFMag']
-            val_obj[j] = data_array[i][bands[j]]['ApMag']
-            err_obj[j] = data_array[i][bands[j]]['ApMagErr']
+        if aperture == Aperture.fillfac:
+            for j in range (5):
+                val_obj[j] = data_array[i][bands[j]]['ApMag']
+                err_obj[j] = data_array[i][bands[j]]['ApMagErr']
+        else:
+            for j in range (5):
+                val_obj[j] = data_array[i][bands[j]]['PSFMag']
+                err_obj[j] = data_array[i][bands[j]]['PSFMagErr']
         sample = np.append(sample, val_obj)
         error = np.append(error, err_obj)
     sample = np.reshape(sample,(-1,5))
@@ -392,13 +397,20 @@ def create_distribution(h,data_array):
     df = pd.DataFrame(data=d)
     df.to_csv('~/diff_const_rad_band_after_slicing.csv')
     return (obj_diff_med,obj_diff_var,band_diff_med,band_diff_var)
-'''
 
+'''
 
 if __name__ == "__main__":
-    joint_table, h_ps1, data_array_ps1, h_sdss = create_common_table(sys.argv[1], sys.argv[2], sys.argv[3], sys.argv[4])
+    joint_table, h_ps1, data_array_ps1, h_sdss = create_common_table(sys.argv[1], sys.argv[2], sys.argv[3], sys.argv[4], sys.argv[5])
 
 '''
 
-#create_common_table('/home/litalsol/Documents/astro/tables/Skyserver_SQL1_5_2021_7_27_01AM.csv', '/home/litalsol/Documents/astro/tables/stars_coor_csv_16_11_2020.csv', '/home/litalsol/Documents/astro/tables/stars_coor.csv', '/home/litalsol/Documents/astro/fits')
+joint_table, h_ps1, data_array_ps1, h_sdss = create_common_table('/home/litalsol/Documents/astro/tables/Skyserver_SQL1_5_2021_7_27_01AM.csv', 
+                    '/home/litalsol/Documents/astro/tables/stars_coor_csv_16_11_2020.csv', 
+                    '/home/litalsol/Documents/astro/tables/stars_coor.csv', '/home/litalsol/Documents/astro/fits',
+                    Aperture.psf)
+
+a,b,c,d = create_distribution(h_ps1, data_array_ps1, Aperture.psf)
+
+
 '''

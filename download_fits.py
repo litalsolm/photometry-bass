@@ -14,6 +14,7 @@ import bz2
 from bs4 import BeautifulSoup
 import sys
 
+# run with: python m /home/litalsol/Documents/astro/tables/stars_coor.csv /home/litalsol/Documents/astro/tables/Skyserver_SQL1_5_2021_7_27_01AM.csv /home/litalsol/Documents/astro/fits
 
 # input: the output file from sdss cross-id and path to download the images to.
 def download_sdss (file_dir, direc):
