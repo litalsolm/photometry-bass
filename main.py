@@ -12,7 +12,8 @@ import sys
 #ps1_file = '/home/litalsol/Documents/astro/tables/stars_coor_csv_16_11_2020.csv' # the ps1 catalog search output file
 #ps1_targets_file = "/home/litalsol/Documents/astro/tables/stars_coor.csv" # the input file for ps1 catalog search
 
-# to activate from terminal: >> photometry-bass/photometry-bass >> python main.py /home/litalsol/Documents/astro/tables//home/litalsol/Documents/astro/tables/Skyserver_SQL1_5_2021_7_27_01AM.csv /home/litalsol/Documents/astro/tables/stars_coor_csv_16_11_2020.csv /home/litalsol/Documents/astro/tables/stars_coor.csv /home/litalsol/Documents/astro/fits
+# to activate from terminal: >> photometry-bass/photometry-bass >> 
+# python main.py /home/litalsol/Documents/astro/tables/Skyserver_SQL1_5_2021_7_27_01AM.csv /home/litalsol/Documents/astro/tables/stars_coor_csv_16_11_2020.csv /home/litalsol/Documents/astro/tables/stars_coor.csv /home/litalsol/Documents/astro/fits Aperture.fillfac
 
 
 #data array = [{g:{psfMajorFWHM:..., psfMinorFWHM:...},i:{},...},{}] -> to get data of the first target data_array[0]
@@ -136,7 +137,7 @@ def calc_phot_sdss(sdss_file, path):
     ph = ph.assign(ra=columns_sdss['ra'],dec=columns_sdss['dec'],ID=columns_sdss['target'])
     
     print(ph)
-    ph.to_csv('/home/litalsol/Documents/astro/photometry_sdss.csv')
+    ph.to_csv('~/photometry_sdss.csv')
     
     return h_sdss
 
@@ -158,10 +159,10 @@ def calc_phot_ps1(ps1_file, ps1_targets_file, path):
     ph = ph.assign(ra=columns_ps1['_ra_'],dec=columns_ps1['_dec_'],ID=targets_ps1)
     
     print(ph)
-    ph.to_csv('/home/litalsol/Documents/astro/photometry_ps1.csv')
+    ph.to_csv('~/photometry_ps1.csv')
     return (h_ps1, data_array_ps1)
 
-def create_common_table(sdss_file, ps1_file,ps1_targets_file, path, aperture):
+def create_common_table(sdss_file, ps1_file, ps1_targets_file, path, aperture):
     #calculating sdss photometry
     coor_sdss, columns_sdss = extract_data_from_sdss(sdss_file)
     data_array_sdss = []
@@ -325,7 +326,7 @@ def create_distribution(h, data_array, aperture):
     
     d = {"median":band_diff_med, "std":band_diff_var}
     df = pd.DataFrame(data=d)
-    #df.to_csv('/home/litalsol/Documents/astro/diff_psf_band.csv')
+    #df.to_csv('~/diff_psf_band.csv')
        
     for i in range(5):
         y = diff[:,i]
@@ -402,15 +403,3 @@ def create_distribution(h, data_array, aperture):
 
 if __name__ == "__main__":
     joint_table, h_ps1, data_array_ps1, h_sdss = create_common_table(sys.argv[1], sys.argv[2], sys.argv[3], sys.argv[4], sys.argv[5])
-
-'''
-
-joint_table, h_ps1, data_array_ps1, h_sdss = create_common_table('/home/litalsol/Documents/astro/tables/Skyserver_SQL1_5_2021_7_27_01AM.csv', 
-                    '/home/litalsol/Documents/astro/tables/stars_coor_csv_16_11_2020.csv', 
-                    '/home/litalsol/Documents/astro/tables/stars_coor.csv', '/home/litalsol/Documents/astro/fits',
-                    Aperture.psf)
-
-a,b,c,d = create_distribution(h_ps1, data_array_ps1, Aperture.psf)
-
-
-'''

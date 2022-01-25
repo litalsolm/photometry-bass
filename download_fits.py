@@ -120,16 +120,8 @@ def download_all(file_dir_ps1, file_dir_sdss, path):
     download_ps1(file_dir_ps1, path)
     download_sdss(file_dir_sdss, path)
     
-'''    
-#download_ps1('/home/litalsol/Documents/astro/tables/stars_coor.csv', '/home/litalsol/Documents/astro/fits')
-#download_sdss('/home/litalsol/Documents/astro/tables/Skyserver_SQL1_5_2021_7_27_01AM.csv', '/home/litalsol/Documents/astro/fits') 
-#file_dir = '/home/litalsol/Documents/astro/tables/stars_coor.csv' #in the future when I want to download all the fits files, I will replace this file with 'BAT_catalog_for_cross_id.csv'
-#file_dir2 = '/home/litalsol/Documents/astro/tables/Skyserver_SQL1_5_2021_7_27_01AM.csv'
-#download_sdss(file_dir2)
-#download_ps1(file_dir)'''
 
 if __name__ == "__main__":
- #   download_all(sys.argv[1], sys.argv[2], sys.argv[3])
     download_ps1(sys.argv[1], sys.argv[3])
     download_sdss(sys.argv[2], sys.argv[3])
 

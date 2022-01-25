@@ -1,0 +1,2658 @@
+#LyX 2.3 created this file. For more info see http://www.lyx.org/
+\lyxformat 544
+\begin_document
+\begin_header
+\save_transient_properties true
+\origin unavailable
+\textclass article
+\use_default_options true
+\maintain_unincluded_children false
+\language english
+\language_package default
+\inputencoding auto
+\fontencoding global
+\font_roman "default" "default"
+\font_sans "default" "default"
+\font_typewriter "default" "default"
+\font_math "auto" "auto"
+\font_default_family default
+\use_non_tex_fonts false
+\font_sc false
+\font_osf false
+\font_sf_scale 100 100
+\font_tt_scale 100 100
+\use_microtype false
+\use_dash_ligatures true
+\graphics default
+\default_output_format default
+\output_sync 0
+\bibtex_command default
+\index_command default
+\float_placement H
+\paperfontsize default
+\spacing single
+\use_hyperref false
+\papersize default
+\use_geometry true
+\use_package amsmath 1
+\use_package amssymb 1
+\use_package cancel 1
+\use_package esint 1
+\use_package mathdots 1
+\use_package mathtools 1
+\use_package mhchem 1
+\use_package stackrel 1
+\use_package stmaryrd 1
+\use_package undertilde 1
+\cite_engine basic
+\cite_engine_type default
+\biblio_style plain
+\use_bibtopic false
+\use_indices false
+\paperorientation portrait
+\suppress_date false
+\justification true
+\use_refstyle 1
+\use_minted 0
+\index Index
+\shortcut idx
+\color #008000
+\end_index
+\leftmargin 3cm
+\topmargin 3cm
+\rightmargin 3cm
+\bottommargin 4cm
+\headheight 3cm
+\headsep 3cm
+\footskip 3cm
+\secnumdepth 3
+\tocdepth 3
+\paragraph_separation indent
+\paragraph_indentation default
+\is_math_indent 0
+\math_numbering_side default
+\quotes_style english
+\dynamic_quotes 0
+\papercolumns 1
+\papersides 1
+\paperpagestyle default
+\tracking_changes false
+\output_changes false
+\html_math_output 0
+\html_css_as_file 0
+\html_be_strict false
+\end_header
+
+\begin_body
+
+\begin_layout Title
+Multi-band optical photometry of BASS nuclei
+\end_layout
+
+\begin_layout Author
+Lital sol Mandelbaum, Benny Trekhtenbrot
+\end_layout
+
+\begin_layout Section
+Introduction
+\end_layout
+
+\begin_layout Subsection
+Theoretical Background
+\end_layout
+
+\begin_layout Subsection
+BASS survey
+\end_layout
+
+\begin_layout Standard
+The BAT AGN Spectroscopic Survey (BASS) aims to provide a comprehensive,
+ highly-complete census of the most powerful accreting SMBHs (i.e., AGN) in
+ the local universe.
+ This is achieved by obtaining multi-wavelength observations, in particular
+ optical spectroscopy and broad-band X-ray data, for over 1000 AGN selected
+ in the ultra-hard X-ray regime (
+\begin_inset Formula $\sim$
+\end_inset
+
+14-195 keV) by the BAT instrument on board the Neil Gehrels 
+\emph on
+Swift
+\emph default
+ Observatory, during its continuing survey of the entire sky.
+ This reliance on ultra-hard X-rays ensures that AGN are selected regardless
+ of amount of obscuration that their radiation field experiences by dusty
+ gas along the line of sight (either circumnuclear or host-galaxy-wide).
+\end_layout
+
+\begin_layout Standard
+
+\end_layout
+
+\begin_layout Standard
+The BASS project has already provided reliable measurements of key AGN propertie
+s, including BH masses and accretion rates, line-of-sight column densities,
+ and strong emission line diagnostics, for over 600 AGN (BASS/DR1; Koss
+ et al.
+ 2017) drawn from the 70-month catalog of BAT.
+ The present analysis relies on the larger, deeper 105-month BAT catalog,
+ which includes 1632 sources, of which 1189 are AGN (Oh et al.
+ 2018).
+ We note that, unlike some other BASS-related works, our analysis includes
+ beamed AGN (i.e., blazars, FSRQs, etc.) and low galactic latitude sources.
+ 
+\end_layout
+
+\begin_layout Subsection
+Our objective
+\end_layout
+
+\begin_layout Section
+The Data
+\end_layout
+
+\begin_layout Subsection
+Pan-STARRS (PS1)
+\end_layout
+
+\begin_layout Standard
+For this project, PS1 catalog is the main catalog.
+ It covers about 75% of the sky (see figure 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:PS1's-sky-coverage"
+
+\end_inset
+
+).
+ Pan-STARRS is a system for wide-field astronomical imaging developed and
+ it's operated by the Institute for Astronomy at the University of Hawaii
+\begin_inset Foot
+status open
+
+\begin_layout Plain Layout
+\begin_inset CommandInset href
+LatexCommand href
+name "PAN-STARRS website"
+target "https://panstarrs.stsci.edu/"
+literal "false"
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+.
+ 
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:PS1's-sky-coverage"
+
+\end_inset
+
+PS1's 
+\begin_inset Formula $3\pi$
+\end_inset
+
+ sky coverage in g band
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename Screenshot from 2020-12-11 21-24-54.png
+	lyxscale 40
+	scale 35
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+The PS1 survey used a 1.8 meter telescope and its 1.4 Gigapixel camera to
+ image the sky in five broadband filters: g (green), r (red), i (near infrared),
+ z (infrared) and y (infrared) (see figure 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:Left:-The-PS1"
+
+\end_inset
+
+).
+ The mean wavelength of the bands is in table 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "tab:The-mean-wavelnegth"
+
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:Left:-The-PS1"
+
+\end_inset
+
+Left: The PS1 capture cross-section in m2/e/photon to produce a detected
+ e− for an incident photon for the six Pan-STARRS1 bandpasses, grizy and
+ w for a standard airmass of 1.2 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "PS1-filter-prop"
+literal "false"
+
+\end_inset
+
+.
+ Right: Comparisons between the 
+\begin_inset Formula $griz_{P1}$
+\end_inset
+
+ and other survey filters (CSP = Carnegie Supernova Project and CfAK = CfA-Keple
+rcam, SNLS = Supernova Legacy Survey) 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "SDSS-mean-wavelength"
+literal "false"
+
+\end_inset
+
+.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename tonryphotometricsystem.jpg
+	lyxscale 50
+	scale 28
+
+\end_inset
+
+ 
+\begin_inset Graphics
+	filename griz_Scolnic_comp_top.png
+	lyxscale 20
+	scale 12
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset Float table
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "tab:The-mean-wavelnegth"
+
+\end_inset
+
+The mean wavelnegth of the bands in PS1 and SDSS
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Tabular
+<lyxtabular version="3" rows="7" columns="3">
+<features tabularvalignment="middle">
+<column alignment="center" valignment="top">
+<column alignment="center" valignment="top">
+<column alignment="center" valignment="top">
+<row>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+band
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+mean wavelength PS1 [
+\begin_inset Formula $\mathring{A}$
+\end_inset
+
+]
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+mean wavelength SDSS [
+\begin_inset Formula $\mathring{A}$
+\end_inset
+
+]
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+u
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+-
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+3543
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+g
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+4866
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+4770
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+r
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+6215
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+6231
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+i
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+7545
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+7625
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+z
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+8679
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+9134
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+y
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+9633
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+-
+\end_layout
+
+\end_inset
+</cell>
+</row>
+</lyxtabular>
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+The PS1 survey displays stacks of about 12 warps 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "PS1-wrap-img"
+literal "false"
+
+\end_inset
+
+ (or more) per filter.
+ The stacks are astrometrically and photometrically calibrated and have
+ the same zero point (see section 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "subsec:Units"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+ under PS1).
+ The skycell images generated by the Warp process are added together to
+ make deeper, higher signal-to-noise images in the Stack stage.
+ Each stack has an exposure time that depends on the number of warps that
+ are stacked - the exposure time for a stack is given in the FITS header
+ (keyword EXPTIME).
+ It consists of the unweighted sum of the individual warp exposures that
+ were passed to the stacking process.
+ The exposure time is used to convert the PS1 data units to magnitudes (see
+ eq.
+ 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:mag_ps1"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+ in section 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "subsec:Units"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+ below).
+\end_layout
+
+\begin_layout Subsection
+SDSS
+\end_layout
+
+\begin_layout Standard
+The Sloan Digital Sky Survey (SDSS) is a major multi-band imaging and spectrosco
+pic survey which uses a dedicated 2.5-m wide-angle optical telescope at Apache
+ Point Observatory in New Mexico, United States.
+ The final imaging data release
+\color red
+ 
+\color black
+(DR9)
+\color inherit
+ covers over 35% of the sky (see figure 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:DR12-imaging-and"
+
+\end_inset
+
+).
+ SDSS images the sky in 5 broad filters: u (ultraviolet), g (green), r (red),
+ i (near infrared) and z (infrared)
+\begin_inset Foot
+status open
+
+\begin_layout Plain Layout
+\begin_inset CommandInset href
+LatexCommand href
+name "SDSS filters"
+target "https://speclite.readthedocs.io/en/latest/filters.html"
+literal "false"
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+.
+ The mean wavelength of the bands is in table 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "tab:The-mean-wavelnegth"
+
+\end_inset
+
+ 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "SDSS-mean-wavelength"
+literal "false"
+
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:DR12-imaging-and"
+
+\end_inset
+
+DR12 imaging and optical spectroscopic coverage in Equatorial coordinates
+ (plot centered at RA = 6h, or 90 deg).
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename dr12_legacy_plus_segue_coverage.png
+	lyxscale 30
+	scale 13
+
+\end_inset
+
+ 
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section
+Measurements - Aperture Photometry
+\end_layout
+
+\begin_layout Subsection
+Calculating Photometry
+\end_layout
+
+\begin_layout Standard
+Given a fits file and the celestial coordinates of a celestial object (star,
+ galaxy or anything that emits enough light) that is seen in the fits file
+ image, calculating this object's photometry is rather simple.
+ The fits file gives the information of the 
+\begin_inset Quotes eld
+\end_inset
+
+counts
+\begin_inset Quotes erd
+\end_inset
+
+ of each pixel in the image, so to calculate the object's brightness one
+ needs to choose an aperture (preferably as close to the object as possible)
+ and sum the 
+\begin_inset Quotes eld
+\end_inset
+
+counts
+\begin_inset Quotes erd
+\end_inset
+
+ of the pixels that are within the aperture.
+ In practice we had to deal with some complexity that will be decribed in
+ the next few sections, as well as our solutions to these problems.
+ The measured flux of an object, in the native units of the fits image file,
+ will be denoted as DN.
+\end_layout
+
+\begin_layout Subsubsection
+Aperture Photometry package for python
+\end_layout
+
+\begin_layout Standard
+Most of the calculating work is done by the Photutils package
+\begin_inset Foot
+status open
+
+\begin_layout Plain Layout
+\begin_inset CommandInset href
+LatexCommand href
+name "Aperture Photometry in Photutils"
+target "https://photutils.readthedocs.io/en/stable/aperture.html"
+literal "false"
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+ that is designed to calculate photometry, when given a fits file, celestial
+ coordinates and an aperture radius.
+ The package calculate an object's DN in data units and give a more accurate
+ result than simply summing up pixel values.
+ This is becuase when summing up pixels we don't sum up light within a circle,
+ 
+\color black
+so a more complcated calculation is requierd here
+\color inherit
+.
+\end_layout
+
+\begin_layout Subsubsection
+\begin_inset CommandInset label
+LatexCommand label
+name "subsec:Units"
+
+\end_inset
+
+Units
+\end_layout
+
+\begin_layout Standard
+The value, or 
+\begin_inset Quotes eld
+\end_inset
+
+counts
+\begin_inset Quotes erd
+\end_inset
+
+, of each pixel varies between surveys.
+ We want to find the photometry values in magnitudes, so for each survey
+ we use a different convertion.
+ 
+\end_layout
+
+\begin_layout Itemize
+SDSS - an SDSS fits file counts are in nanomaggy (nMgy) units.
+ A "maggy" is the flux density 
+\begin_inset Formula $f_{\nu}$
+\end_inset
+
+ of the (singel pixel) 
+\color black
+source relative
+\color inherit
+ to the standard source 
+\begin_inset Formula $f_{0}$
+\end_inset
+
+ (which defines the zeropoint of the magnitude scale).
+ The convertion from nMgy to AB magnitudes is the following 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "sdss-nmgy-to-ab"
+literal "false"
+
+\end_inset
+
+:
+\begin_inset Formula 
+\begin{equation}
+m_{AB}=-2.5log_{10}(DN\times10^{-9})\label{eq:sdsstomag}
+\end{equation}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Itemize
+PS1 - for the convertion from PS1 data units to magnitudes we use the zero
+ point, which is the magnitude of an object with a count rate of 1.
+ PS1's zero point is normalized and equals 25 for all the fits files, so
+ the convertion from data units to magnitudes is the following 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "ps1-units-to-mag"
+literal "false"
+
+\end_inset
+
+:
+\begin_inset Formula 
+\begin{equation}
+m_{AB}=-2.5log_{10}DN+25+2.5log_{10}(t_{exp})\label{eq:mag_ps1}
+\end{equation}
+
+\end_inset
+
+where 
+\begin_inset Formula $t_{exp}$
+\end_inset
+
+ is the exposure time for a stack in seconds, and it is given in the fits
+ file header under 'EXPTIME'.
+\end_layout
+
+\begin_layout Subsubsection
+Celestial-units to Pixels
+\end_layout
+
+\begin_layout Standard
+Given a fits file and an object's celectial coordinates, we want to be able
+ to convert distances from sky units (arcsec) to pixels in the fits image,
+ so if we choose an aperture radius in arc seconds, we can find the aperture
+ radius in pixels.
+ The details of this convertion vary between the two survey data products:
+\end_layout
+
+\begin_layout Itemize
+PS1 - the convertion is the following:
+\begin_inset Formula 
+\begin{equation}
+arcsec=\frac{1}{3600\cdot CDELT1}
+\end{equation}
+
+\end_inset
+
+Where CDELT1 is the ratio of degrees to pixel in each fits file, and it
+ can be found in the header under 'CDELT1'.
+\end_layout
+
+\begin_layout Itemize
+SDSS - the convertion is the following: 
+\begin_inset Formula 
+\begin{equation}
+arcsec=\frac{1}{\sqrt{(CD1\_2\cdot3600)^{2}+(CD2\_2\cdot3600)^{2}}}
+\end{equation}
+
+\end_inset
+
+Where 
+\color black
+CD1_2 and CD2_2
+\color inherit
+ are RA and DEC degrees per row pixel, and they can be found in the header
+ under 'CD1_2' and 'CD2_2'.
+\end_layout
+
+\begin_layout Standard
+Later we can use this covertion to convert the aperture radius to calculate
+ the background, as described in the next section.
+\end_layout
+
+\begin_layout Subsubsection
+Background
+\end_layout
+
+\begin_layout Standard
+An important part of calculating photometry, is subtructing the image's
+ background from the source counts, since the sky and unresolved emission
+ can create background light, and there might be another light emitter close
+ to the object (or in front of it) that can add light to the DN.
+ To calculate the background we set 3 radii: small, medium and large, such
+ that 
+\begin_inset Formula $radii=[r,2r,3r]$
+\end_inset
+
+, where r is the aperture radius used for the source measurment.
+ The background is calculated in the ring between medium and large radii
+ (the big ring), since between the small and the medium radii some light
+ from the object might be present.
+ To sum pixels within a circular aperture, where (x,y) is the location of
+ the object in pixels, the pixels that are added to the sum are the ones
+ within [x-3r, x+3r] and [y-3r, y+3r] and also where their distance from
+ (x,y) is in the range [2r, 3r].
+ Here we denote DN as the set of count values that are within the big ring.
+ The background is calculated using:
+\begin_inset Formula 
+\begin{equation}
+bg=median(x_{bg})
+\end{equation}
+
+\end_inset
+
+where 
+\begin_inset Formula $x_{bg}$
+\end_inset
+
+ is the set of count values in the big ring.
+ The background uncertainty is:
+\begin_inset Formula 
+\begin{equation}
+\Delta bg=\frac{SDT(x_{bg})}{\sqrt{n}}
+\end{equation}
+
+\end_inset
+
+where n is the number of pixels in the big ring.
+ In the calculation of the uncertainty I neglect the poisson distribution
+ uncertainty, since the statistical uncertainty (as we saw in our measurments)
+ is the dominent one.
+ Equations 5 and 6 give as the median and the uncertainty of the background
+ in one pixel, so to calculate the background subtracted source counts:
+\begin_inset Formula 
+\begin{equation}
+DN_{cor}=DN-bg\cdot\pi r^{2}
+\end{equation}
+
+\end_inset
+
+To find the total background uncertainty we multiply the uncertainty by
+ the circle area:
+\begin_inset Formula 
+\begin{equation}
+\Delta bg_{tot}=bg_{err}\cdot\pi r^{2}
+\end{equation}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsubsection
+uncertainties
+\end_layout
+
+\begin_layout Standard
+An important factor we need to address here is the gain: in CCD imaging,
+ gain refers to the amplification a given system will produce 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "gain"
+literal "false"
+
+\end_inset
+
+.
+ The DN is calculated using:
+\begin_inset Formula 
+\begin{equation}
+DN=\frac{electrons}{gain}
+\end{equation}
+
+\end_inset
+
+where electrons is the number of electrons that encountered the measuring
+ instrument.
+ We can find the gain of every image in the fits file header: in PS1 it's
+ under 'HIERARCH CELL.GAIN' and in SDSS it's under 'NMGY' (NMGY is 
+\begin_inset Formula $\frac{1}{gain}$
+\end_inset
+
+ so for SDSS 
+\begin_inset Formula $DN=NMGY\cdot electrons$
+\end_inset
+
+).
+ The gain is important when calculating the uncertainties, since we know
+ that the electron counts follow a poisson distribution, but we need to
+ find the uncertainties for DN.
+ The DN's inaccuracy consists of 2 quantities: the poisson distribution
+ uncertainty of the electron count and the uncertainty in background determinati
+on.
+ The poisson distribution uncertainty we calculate with:
+\begin_inset Formula 
+\begin{equation}
+\Delta pois=\frac{1}{gain}\sqrt{DN\cdot gain}=\sqrt{\frac{DN}{gain}}
+\end{equation}
+
+\end_inset
+
+And the background inaccuracy is calculated in equation 8.
+ We therefore find the total inaccuracy:
+\begin_inset Formula 
+\begin{equation}
+\Delta DN=\sqrt{\Delta pois^{2}+\Delta bg_{tot}^{2}}
+\end{equation}
+
+\end_inset
+
+The final step in calculating the uncertainties is converting them to magnitudes.
+ Due to the logarithmic nature of the DN-to-mag convertion, the uncertainties
+ are not symmetric, so we get 2 different uncertainties when converting
+ to magnitude: up and down.
+ We denote 
+\begin_inset Formula $Mag(val)$
+\end_inset
+
+ as the convertion of val to magnitudes, using eq.
+ 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:sdsstomag"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+ and 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:mag_ps1"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+.
+ The uncertainties are calculated with:
+\begin_inset Formula 
+\begin{equation}
+\Delta_{-}=|Mag(DN_{cor}+\Delta DN)-Mag(DN_{cor})|
+\end{equation}
+
+\end_inset
+
+
+\begin_inset Formula 
+\begin{equation}
+\Delta_{+}=|Mag(DN_{cor}-\Delta DN)-Mag(DN_{cor})
+\end{equation}
+
+\end_inset
+
+Where 
+\begin_inset Formula $\Delta_{-}$
+\end_inset
+
+ is the down inaccuracy and 
+\begin_inset Formula $\Delta_{+}$
+\end_inset
+
+ is the up inaccuracy, both in magnitudes.
+ The uncertainty range is 
+\begin_inset Formula $[DN_{cor}-\Delta_{-},DN_{cor}+\Delta_{+}]$
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Subsubsection
+concederations in choosing Aperture Radius
+\end_layout
+
+\begin_layout Standard
+To choose the aperture radius correctly we need to understand PSF.
+ The PSF - point spread function - of an optical device is the image of
+ a single point object (see figure 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:psf"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+).
+ the PSF is an atrribute of the optical instrument used to capture images,
+ so the degree of spreading (blurring) in the image of this point object
+ is a measure for the quality of an optical system.
+ The PSF causes the point object to spread to an elliptical shape, but the
+ sum of light from the object is conserved (though we need to change the
+ aperture to capture all of it).
+ To try and capture the light from the spread object, we can use the PSF's
+ FWHM (full-width-half-maximum) as the aperture radius.
+ Since the object is elliptical, we have 2 FWHMs - major axis and minor
+ axis - we will use their average as the aperture radius.
+ In a 2-D gaussian, 
+\begin_inset Formula $FWHM\thickapprox2.355\sigma$
+\end_inset
+
+, so the percentage of area under the gaussian that is bounded by the FWHM
+ is about 93.75% (when assuming the PSF is a 2D circular gaussian) .
+ Therefore, to find the sum of the light count within 1 PSF, we can use
+ the FWHM as the aperture radius, and then divide the result by 0.9375.
+\end_layout
+
+\begin_layout Standard
+
+\color black
+For SDSS images the aperture radius is 1.5 arcsec.
+ For PS1 images the aperure radius is calculated using PS1 catalog information,
+ and this is covered in section 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "subsec:Testing-and-Statistics"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+ - 
+\series bold
+Testing and Statistics - PS1.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:psf"
+
+\end_inset
+
+A discription of the PSF's influnce on an image of a point object
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename csm_Figure3_PSF_distilling_explained_d89aa52100.png
+	lyxscale 70
+	scale 50
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
+\begin_inset CommandInset label
+LatexCommand label
+name "subsec:Testing-and-Statistics"
+
+\end_inset
+
+Testing - PS1
+\end_layout
+
+\begin_layout Standard
+During the writing of the program, I did all the calculations on some carefully
+ selected stars (instead of galaxies).
+ This is because stars are effectively a point source of light, whereas
+ the light from galaxies tends to be spatially resolved.
+ I used the SDSS image tool 
+\begin_inset Foot
+status open
+
+\begin_layout Plain Layout
+\begin_inset CommandInset href
+LatexCommand href
+name "SDSS images tool"
+target "http://skyserver.sdss.org/dr15/en/tools/chart/navi.aspx"
+literal "false"
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+ to select 48 stars that have fits files and are visible in all 5 bands.
+ After choosing the stars I uploaded their coordinates to the PS1 Catalog
+ Search
+\begin_inset Foot
+status open
+
+\begin_layout Plain Layout
+\begin_inset CommandInset href
+LatexCommand href
+name "PS1 catalog search"
+target "https://catalogs.mast.stsci.edu/panstarrs/"
+literal "false"
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+.
+ This search can give us information on wether a star is seen in PS1 (as
+ described above) and it can give us the stars' photometry according to
+ PS1 and how it was calculated.
+ This is a very important tool that can be used to test our code, since
+ we can compare our results to PS1's results.
+ We noticed the PS1 search output provides information on two options to
+ calculate the photometry:
+\end_layout
+
+\begin_layout Enumerate
+For each object and in each band, the FWHMs of the major and minor axis
+ of the PSF are given.
+ We can use the average of the two as the aperture radius for the measurment
+ and scale the result by 0.9375, since the FWHM PSF captures only 93.75% of
+ the object's light.
+\end_layout
+
+\begin_layout Enumerate
+For each object and in each band, the aperture radius and aperture filling
+ factor used by PS1 are given.
+ We can use the apreture radius as radius for the measerment and divide
+ the result by the aperture filling factor (now the fraction of light captured
+ within the aperture radius varies).
+\end_layout
+
+\begin_layout Standard
+I've tried both calculations to see which one has a result closer to the
+ PS1 calculated photometry, and found that the best option is the second
+ one - using the filling factor.
+ This desicion was made after comparing the differences between PS1 calculated
+ photometry and my calculated photomotry (hereinafter will be refferd as
+ 
+\begin_inset Quotes eld
+\end_inset
+
+the difference
+\begin_inset Quotes erd
+\end_inset
+
+), for both options.
+ For the first option, the median of the differences per band is 
+\color black
+at most
+\color inherit
+ 
+\begin_inset Formula $\backsim0.48$
+\end_inset
+
+ magnitudes (see table 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "tab:Option-1"
+
+\end_inset
+
+), whereas for the second option it's at most 
+\begin_inset Formula $\backsim0.082$
+\end_inset
+
+ magnitudes (see table 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "tab:option-2"
+
+\end_inset
+
+).
+ There were 2 extreme data points in the difference for option 1 (~2 magnitudes)
+ so the rightmost column in table 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "tab:Option-1"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+ shows the STD after clipping those data points (the median stayed almost
+ the same, of course).
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float table
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "tab:The-medians-and"
+
+\end_inset
+
+The medians and and standart deviations of the differences in each band
+ for the 48 selected stars using the two options for aperture radii (option
+ 1- PSF radius, option 2 - aperture radion with filling factor)
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Float table
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "tab:Option-1"
+
+\end_inset
+
+Option 1
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Tabular
+<lyxtabular version="3" rows="6" columns="7">
+<features tabularvalignment="middle">
+<column alignment="center" valignment="top">
+<column alignment="center" valignment="top">
+<column alignment="center" valignment="top">
+<column alignment="center" valignment="top">
+<column alignment="center" valignment="top">
+<column alignment="center" valignment="top">
+<column alignment="center" valignment="top">
+<row>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Band
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Median
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+STD
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Median after slicing
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+STD after slicing
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Median after clipping
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+STD after clipping
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+g
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+-0.32
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+0.24
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+-0.33
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+0.22
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+-0.32
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+0.04
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+r
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+-0.32
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+0.22
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+-0.32
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+0.18
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+-0.32
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+0.07
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+i
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+-0.34
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+0.43
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+-0.34
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+0.47
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+-0.34
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+0.07
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+z
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+-0.37
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+0.47
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+-0.37
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+0.49
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+-0.37
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+0.06
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+y
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+-0.48
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+0.51
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+-0.48
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+0.53
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+-0.48
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+0.075
+\end_layout
+
+\end_inset
+</cell>
+</row>
+</lyxtabular>
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Float table
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "tab:option-2"
+
+\end_inset
+
+option 2
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Tabular
+<lyxtabular version="3" rows="6" columns="5">
+<features tabularvalignment="middle">
+<column alignment="center" valignment="top">
+<column alignment="center" valignment="top">
+<column alignment="center" valignment="top">
+<column alignment="center" valignment="top">
+<column alignment="center" valignment="top">
+<row>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Band
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Median
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+STD 
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Median after slicing
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+STD after slicing
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+g
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+0.071
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+0.256
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+0.063
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+0.122
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+r
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+0.082
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+0.150
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+0.080
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+0.064
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+i
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+0.077
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+0.244
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+0.075
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+0.243
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+z
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+0.077
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+0.210
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+0.075
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+0.198
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+y
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+0.020
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+0.343
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+0.021
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+0.347
+\end_layout
+
+\end_inset
+</cell>
+</row>
+</lyxtabular>
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+In an effort to further understand (and minimize) the differnce, I created
+ a plot of the difference between the measures as a function of the measured
+ magnitude, for option 2 (see figure 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:The-diffrence-as"
+
+\end_inset
+
+, blue).
+ We noticed that the difference grows significantly for stars fainter than
+ ~20-21 magnitudes.
+
+\color black
+ This is expected since the uncertainty grows for fainter objects
+\color inherit
+.
+ To minimize the effect of this trend on my test statistics, I sliced all
+ the measurments in each band that have a value higher than 20.5 magnitudes
+ (see figure 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:The-diffrence-as"
+
+\end_inset
+
+, red).
+ We can notice that after slicing, the plots show an approximately straight
+ line 
+\color black
+constatnt and very close to 0 
+\color inherit
+(in some bands exists a small shift above 0, e.g.
+ band r), so the differences are small enough.
+ The median and STD after slicing are also shown in table 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "tab:The-medians-and"
+
+\end_inset
+
+ (2 rightmost columns).
+ 
+\color black
+We can notice that for option 1 the values after slicing barely change,
+ whereas for option 2 there is a more significant change (between 2.5%-12%).
+ 
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:The-diffrence-as"
+
+\end_inset
+
+The diffrence as a function of the measured magnitude per band in option
+ 2.
+ In blue - before slicing, in red - after slicing.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename plots/diff_vs_mag_g.png
+	scale 50
+
+\end_inset
+
+ 
+\begin_inset Graphics
+	filename plots/diff_vs_mag_r.png
+	scale 50
+
+\end_inset
+
+ 
+\begin_inset Graphics
+	filename plots/diff_vs_mag_i.png
+	scale 50
+
+\end_inset
+
+ 
+\begin_inset Graphics
+	filename plots/diff_vs_mag_z.png
+	scale 50
+
+\end_inset
+
+ 
+\begin_inset Graphics
+	filename plots/diff_vs_mag_y.png
+	scale 50
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+To see the reason for the values in option 1 to stay the same after clipping,
+ I created the same plots for option 1 as well (see figure 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:The-diffrence-as-1"
+
+\end_inset
+
+).
+ We can see the values of the differences are independent of the magnitude
+ and are also approximately a staight line (though they have bigger shift
+ than option 2).
+ Note that the images in figure 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:The-diffrence-as-1"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+ show the difference after cliiping the 2 problematic data points.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:The-diffrence-as-1"
+
+\end_inset
+
+The diffrence as a function of the measured magnitude per band in option
+ 1.
+ In blue - before slicing, in red - after slicing.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename plots/diff_vs_mag_op_1_g.png
+	scale 50
+
+\end_inset
+
+ 
+\begin_inset Graphics
+	filename plots/diff_vs_mag_op_1_r.png
+	scale 50
+
+\end_inset
+
+ 
+\begin_inset Graphics
+	filename plots/diff_vs_mag_op_1_i.png
+	scale 50
+
+\end_inset
+
+ 
+\begin_inset Graphics
+	filename plots/diff_vs_mag_op_1_z.png
+	scale 50
+
+\end_inset
+
+ 
+\begin_inset Graphics
+	filename plots/diff_vs_mag_op_1_y.png
+	scale 50
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+After analyzing all the data shwon in table 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "tab:The-medians-and"
+
+\end_inset
+
+ and figures 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:The-diffrence-as"
+
+\end_inset
+
+-
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:The-diffrence-as-1"
+
+\end_inset
+
+, we have decided to use option 2 to measure the photometry in the PS1 survey
+ data, so from now on I will reffer only to option 2 in the data and plots.
+ The meaning of a 0.08 Mag difference between the calculation is an approximately
+ 8% difference in flux measurment, so we can conclude that for the measurment
+ of objects brighter than 20.5 magnitudes, my calculations are reliable.
+\end_layout
+
+\begin_layout Standard
+The next step was to make sure that the calculated uncertainties agree with
+ PS1's calculated uncertainties (in PS1's data the uncertainties that match
+ option 2 are under 
+\begin_inset Quotes eld
+\end_inset
+
+ApMagErr
+\begin_inset Quotes erd
+\end_inset
+
+), so I created a plot of PS1's calculated uncertainties vs.
+ my calculated uncertainties for each band after the slicing the faint objects
+ (see figure 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:PS1's-calculated-uncertainties"
+
+\end_inset
+
+).
+ In each panel there's a black line, representing 
+\begin_inset Formula $y=x$
+\end_inset
+
+, to have a better view on the differences between the uncertainties.
+ We can see that most of the points in the plots are either on or very close
+ to the black line, showing us that not only the uncertainties are of the
+ same order of magnitude, but are also very close to each other, confirming
+ our uncertainties calculation for objects with measurments of up to 20.5
+ magnitudes.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:PS1's-calculated-uncertainties"
+
+\end_inset
+
+PS1's calculated uncertainties vs.
+ my calculated uncertainties
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename plots/errors_plot_g.png
+	scale 50
+
+\end_inset
+
+ 
+\begin_inset Graphics
+	filename plots/errors_plot_r.png
+	scale 50
+
+\end_inset
+
+ 
+\begin_inset Graphics
+	filename plots/errors_plot_i.png
+	scale 50
+
+\end_inset
+
+ 
+\begin_inset Graphics
+	filename plots/errors_plot_z.png
+	scale 50
+
+\end_inset
+
+ 
+\begin_inset Graphics
+	filename plots/errors_plot_y.png
+	scale 50
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section
+Results
+\end_layout
+
+\begin_layout Section
+Summary & Conlusions
+\end_layout
+
+\begin_layout Bibliography
+\begin_inset CommandInset bibitem
+LatexCommand bibitem
+key "PS1-filter-prop"
+literal "false"
+
+\end_inset
+
+ PS1 filter properties from 
+\begin_inset CommandInset href
+LatexCommand href
+name "STScI"
+target "https://outerspace.stsci.edu/display/PANSTARRS/PS1+Filter+properties"
+literal "false"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Bibliography
+\begin_inset CommandInset bibitem
+LatexCommand bibitem
+key "PS1-wrap-img"
+literal "false"
+
+\end_inset
+
+ PS1 wrap images from 
+\begin_inset CommandInset href
+LatexCommand href
+name "STScI"
+target "https://outerspace.stsci.edu/display/PANSTARRS/PS1+Warp+images"
+literal "false"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Bibliography
+\begin_inset CommandInset bibitem
+LatexCommand bibitem
+key "SDSS-mean-wavelength"
+literal "false"
+
+\end_inset
+
+ The mean wavelength of the SDSS filters from 
+\begin_inset CommandInset href
+LatexCommand href
+name "SkyServer/SDSS"
+target "http://skyserver.sdss.org/dr1/en/proj/advanced/color/sdssfilters.asp"
+literal "false"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Bibliography
+\begin_inset CommandInset bibitem
+LatexCommand bibitem
+key "sdss-nmgy-to-ab"
+literal "false"
+
+\end_inset
+
+ Convertion from nMgy to AB magnitude in the 
+\begin_inset CommandInset href
+LatexCommand href
+name "SDSS3 website"
+target "http://www.sdss3.org/dr8/algorithms/magnitudes.php#nmgy"
+literal "false"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Bibliography
+\begin_inset CommandInset bibitem
+LatexCommand bibitem
+key "ps1-units-to-mag"
+literal "false"
+
+\end_inset
+
+ PS1 data unita to magnitude conversion from 
+\begin_inset CommandInset href
+LatexCommand href
+name "STScI"
+target "https://outerspace.stsci.edu/display/PANSTARRS/PS1+Stack+images"
+literal "false"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Bibliography
+\begin_inset CommandInset bibitem
+LatexCommand bibitem
+key "gain"
+literal "false"
+
+\end_inset
+
+ 
+\begin_inset CommandInset href
+LatexCommand href
+name "Gain in CCD imagimg, Teledyne Photometrics"
+target "https://www.photometrics.com/learn/imaging-topics/gain"
+literal "false"
+
+\end_inset
+
+
+\end_layout
+
+\end_body
+\end_document
